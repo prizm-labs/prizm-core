@@ -11,7 +11,7 @@ Package.on_use(function (api) {
 
   api.add_files(['core.js'], //dependencies in order
                 ['client', 'server']);
-  api.export("Pz",['client', 'server']);
+  api.export("Prizm",['client', 'server']);
 });
 
 Package.on_test(function (api) {
