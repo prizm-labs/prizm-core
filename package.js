@@ -7,11 +7,16 @@ Package.on_use(function (api) {
   api.use("underscore", ["client", "server"]);
   api.use("reactive-class", ["client", "server"]);
 
-  api.add_files(['piece.js','card.js','deck.js','pieceLocation.js','player.js'],['client', 'server']);
+  api.add_files(['vendor/pixi/pixi.dev.js', 'vendor/three/three.js'],['client']);
 
-  api.add_files(['core.js'], //dependencies in order
-                ['client', 'server']);
-  api.export("Prizm",['client', 'server']);
+  api.add_files(['vendor/gsap/TweenMax.js'],['client']);
+
+  api.add_files(['Context2D.js','Context3D.js','Bodies.js'],['client']);
+
+  api.add_files(['classes/pieceLocation.js'],['client', 'server']);
+
+  api.add_files(['core.js'], ['client']);
+  api.export("PRIZM",['client']);
 });
 
 Package.on_test(function (api) {
