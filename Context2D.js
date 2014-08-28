@@ -7,6 +7,8 @@ Context2D = function( DOMElementId, renderType, height, width ) {
     };
     this.DOMAnchor = document.getElementById( DOMElementId );
 
+    this.templates = {};
+
     this.renderer = null;
     this.stage = null;
 
@@ -34,19 +36,74 @@ Context2D.prototype = {
         TweenLite.ticker.addEventListener("tick", this.animate.bind(this));
     },
 
-    addBody: function( x, y ){
-        console.log('addEntities',x,y);
+    load: function( file, manifest ){
+
+        console.log('2D load', file, manifest);
+        var _this = this;
+
+        var assetsToLoader = [file];
+        var loader = new PIXI.AssetLoader(assetsToLoader);
+        loader.onProgress = onLoadProgress;
+        loader.onComplete = onLoadComplete;
+        loader.load();
+
+        function onLoadComplete() {
+            console.log('onLoadComplete');
+
+            _.each(manifest, function( record ){
+
+                console.log(record);
+
+                var key = record[0], image = record[1];
+                var template;
+
+                if (typeof image == "string") {
+                    template = function(){
+                        return new PIXI.Sprite(PIXI.Texture.fromImage(image));
+                    };
+
+                } else {
+
+                    template = {};
+
+                    _.each( image, function( path, variant ){
+                        template[variant] = function(){
+                            return new PIXI.Sprite(PIXI.Texture.fromImage(path));
+                        }
+                    })
+                }
+
+                _this.templates[key] = template;
+
+            });
+
+            console.log('2D templates',_this.templates);
+
+//            Meteor.call('loaded2DAssets', true,
+//                function(error, result) {
+//                    Session.set('result', result); });
+
+            GameState.set('2D',true);
+            //GameState.are2DAssetsLoaded = true;
+            //globalDep.changed();
+        }
+
+        function onLoadProgress( loader ) {
+            console.log('onLoadProgress', loader);
+        }
+    },
+
+    addBody: function( x, y, key, options ){
+        console.log('addEntities',x,y,key,options);
 
         var self = this;
 
-        var texture = PIXI.Texture.fromImage("img/location-valid.png");
-        var body = new PIXI.Sprite(texture);
+
+        var body = (options.variant) ? this.templates[key][options.variant]() : this.templates[key]();
 
         body.position.x = x;
         body.position.y = y;
 
-//        bunny.scale.x = 2;
-//        bunny.scale.y = 2;
 
         this.stage.addChild(body);
 
@@ -59,21 +116,20 @@ Context2D.prototype = {
 
     moveBody: function( body ){
 
-
-
         console.log('moveEntity', this.entities[body.id]);
         var entity = this.entities[body.id];
+        var duration = body.duration;
 
-
-        this.runAnimation(function(){
-            TweenLite.to(entity.position, 2, {x:body.x,y:body.y});
-        })
-
+        if (duration==0) {
+            entity.position = {x:body.x,y:body.y};
+        } else {
+            this.runAnimation(function(){
+                TweenLite.to(entity.position, duration, {x:body.x,y:body.y});
+            })
+        }
     },
 
     animate: function(){
-        //console.log('animate');
-        //bunny.rotation += 0.01;
 
         this.renderer.render(this.stage);
 

@@ -17,7 +17,8 @@ Context3D = function( DOMElementId, height, width ) {
     this.cameras = [];
     this.views = {}; //preset perspectives
 
-    this.entities = [];
+    this.entities = []; // all bodies
+    this.bodies = {}; // reserved bodies: tabletop
 };
 
 Context3D.prototype = {
@@ -33,13 +34,27 @@ Context3D.prototype = {
         material.specular = new THREE.Color().setRGB(0.06666666666666667,0.06666666666666667,0.06666666666666667);
 
         this.materials = {
-           'default': material
+            'default': material
         };
+
         this.geometries = { cube: new THREE.BoxGeometry(1,1,1) };
 
         this.templates = {
             camera: function( fov, aspect, near, far ) {
                 return new THREE.PerspectiveCamera( fov, aspect, near, far );
+            },
+            tabletop: function( sizeX, sizeZ ) {
+
+                var geometry = new THREE.PlaneGeometry( sizeX, sizeZ, 3, 3 );
+                var material = new THREE.MeshPhongMaterial({color: 0xffffff, wireframe: false});
+
+                material.ambient = new THREE.Color().setRGB(0.0196078431372549,0.0196078431372549,0.0196078431372549);
+                material.specular = new THREE.Color().setRGB(0.06666666666666667,0.06666666666666667,0.06666666666666667);
+
+                var mesh = new THREE.Mesh(geometry, material);
+                mesh.receiveShadow  = true;
+
+                return mesh;
             }
         };
 
@@ -50,7 +65,7 @@ Context3D.prototype = {
         this.addCamera(75, this.options.width / this.options.height, 0.1, 1000);
 
         this.camera = this.cameras[0];
-        this.camera.position.z = 5;
+        this.camera.position.z = 500;
 
         console.log(this.camera);
 
@@ -66,17 +81,10 @@ Context3D.prototype = {
 
 
         // TODO Floor setup
-//        var geometry = new THREE.PlaneGeometry( 1800, 800, 3, 3 );
-//        var material = new THREE.MeshPhongMaterial({color: 0xffffff, wireframe: false});
-//
-//        material.ambient = new THREE.Color().setRGB(0.0196078431372549,0.0196078431372549,0.0196078431372549);
-//        material.specular = new THREE.Color().setRGB(0.06666666666666667,0.06666666666666667,0.06666666666666667);
-//
-//        var mesh = new THREE.Mesh(geometry, material);
-//        mesh.receiveShadow  = true;
-//        mesh.position.set(0,-50,0);
-//        this.scene.add( mesh );
-
+//        var tabletop = this.templates.tabletop(1200,1200);
+//        tabletop.position.set(0,0,0);
+//        this.scene.add( tabletop );
+//        this.bodies['tabletop'] = tabletop;
 
 
         // TODO setup renderer
@@ -90,6 +98,35 @@ Context3D.prototype = {
 
         TweenLite.ticker.addEventListener("tick", this.render.bind(this));
     },
+
+    addDynamicTexture: function( key, textureMap ){
+
+        var mat = new THREE.MeshPhongMaterial();
+        mat.map = new THREE.Texture(textureMap);
+
+        this.materials[key] = mat;
+        console.log(this.materials);
+    },
+
+    mapTabletopTexture: function( key ){
+
+        var geometry = new THREE.PlaneGeometry( 1200, 1200, 3, 3 );
+        var material = this.materials[key];
+
+        material.ambient = new THREE.Color().setRGB(0.0196078431372549,0.0196078431372549,0.0196078431372549);
+        material.specular = new THREE.Color().setRGB(0.06666666666666667,0.06666666666666667,0.06666666666666667);
+
+        var mesh = new THREE.Mesh(geometry, material);
+        mesh.receiveShadow  = true;
+
+        this.scene.add( mesh );
+
+        mesh.material.map.needsUpdate = true;
+
+//        this.bodies['tabletop'].material = this.materials[key];
+//        this.bodies['tabletop'].material.map.needsUpdate = true;
+    },
+
 
     load: function( model ) {
 
