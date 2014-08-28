@@ -12,7 +12,7 @@ Package.on_use(function (api) {
 
   api.add_files(['vendor/gsap/TweenMax.js'],['client']);
 
-  api.add_files(['Context2D.js','Context3D.js','Bodies.js'],['client']);
+  api.add_files(['Context2D.js','Context3D.js','Bodies.js','Factory.js'],['client']);
 
   api.add_files(['classes/pieceLocation.js'],['client', 'server']);
 

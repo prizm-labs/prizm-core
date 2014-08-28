@@ -94,10 +94,7 @@ Context2D.prototype = {
     },
 
     addBody: function( x, y, key, options ){
-        console.log('addEntities',x,y,key,options);
-
         var self = this;
-
 
         var body = (options.variant) ? this.templates[key][options.variant]() : this.templates[key]();
 
@@ -109,14 +106,14 @@ Context2D.prototype = {
 
         requestAnimationFrame(this.animate.bind(self));
 
+        //TODO create UUID for a PixiJS Sprite
         this.entities.push(body);
-
         return this.entities.length-1;
     },
 
     moveBody: function( body ){
 
-        console.log('moveEntity', this.entities[body.id]);
+        //console.log('moveEntity', this.entities[body.id]);
         var entity = this.entities[body.id];
         var duration = body.duration;
 
