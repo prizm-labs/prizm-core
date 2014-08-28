@@ -13,6 +13,8 @@ Context2D = function( DOMElementId, renderType, height, width ) {
     this.stage = null;
 
     this.entities = [];
+
+    this.locations = {};
 };
 
 Context2D.prototype = {
@@ -52,45 +54,41 @@ Context2D.prototype = {
 
             _.each(manifest, function( record ){
 
-                console.log(record);
-
                 var key = record[0], image = record[1];
                 var template;
 
-                if (typeof image == "string") {
+                if (typeof image == "string") { // single image for sprite
+
                     template = function(){
                         return new PIXI.Sprite(PIXI.Texture.fromImage(image));
                     };
 
-                } else {
+                } else { // multiple versions of sprite
 
                     template = {};
-
                     _.each( image, function( path, variant ){
                         template[variant] = function(){
                             return new PIXI.Sprite(PIXI.Texture.fromImage(path));
                         }
                     })
                 }
-
                 _this.templates[key] = template;
 
             });
 
-            console.log('2D templates',_this.templates);
-
-//            Meteor.call('loaded2DAssets', true,
-//                function(error, result) {
-//                    Session.set('result', result); });
-
             GameState.set('2D',true);
-            //GameState.are2DAssetsLoaded = true;
-            //globalDep.changed();
         }
 
         function onLoadProgress( loader ) {
             console.log('onLoadProgress', loader);
         }
+    },
+
+    // Cache locations to map into 3D plane
+    setLocations: function( key, locations ){
+
+        this.locations[key] = locations;
+
     },
 
     addBody: function( x, y, key, options ){

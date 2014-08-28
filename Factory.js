@@ -12,6 +12,7 @@ Factory = (function() {
 
         this.dependency = dependency;
 
+
         this.templates2D = {};
         //this.bodies2D = [];
 
