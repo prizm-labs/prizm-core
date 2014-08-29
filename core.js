@@ -11,5 +11,7 @@ PRIZM = {
     Factory: Factory,
 
     Node: Node,
-    NodeMatrix: NodeMatrix
+    NodeMatrix: NodeMatrix,
+
+    UIManager: UIManager
 };

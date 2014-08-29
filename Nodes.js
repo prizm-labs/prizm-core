@@ -3,6 +3,9 @@
  */
 // lowest level translator between game state reactive data and rendered bodies
 
+// NodeMatrix query object
+// like jQuery object, allows chaining queries
+// http://www.elijahmanor.com/jquery-object-quacks-like-an-array-duck/
 
 _Q = function( nodes ){
     var _this = this;
@@ -100,6 +103,11 @@ Node = (function(){
 
         return result;
     };
+
+    Node.prototype.destroy = function() {
+        // Remove from all associations
+        // Remove all bodies from contexts
+    }
 
 
     Node.prototype.setLink = function( key, query ){
