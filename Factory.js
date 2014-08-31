@@ -58,7 +58,7 @@ Factory = (function() {
 
         makeBody2D: function( ctxKey, bodyKey, properties, options ) {
 
-            console.log('makeBody',this.contexts[ctxKey].constructor.name);
+            //console.log('makeBody',this.contexts[ctxKey].constructor.name);
 
             var body = new Body2D( this.contexts[ctxKey], properties.x, properties.y, bodyKey, options );
 

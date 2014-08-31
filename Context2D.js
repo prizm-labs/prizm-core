@@ -93,6 +93,28 @@ Context2D.prototype = {
 
     },
 
+    addRectangle: function( x, y, width, height ){
+        var graphics = new PIXI.Graphics();
+
+        //graphics.beginFill(0xFFFF00);
+
+// set the line style to have a width of 5 and set the color to red
+        graphics.lineStyle(1, 0xFF0000);
+
+// draw a rectangle
+        graphics.drawRect( x, y, width, height );
+
+        this.stage.addChild(graphics);
+
+        return graphics;
+    },
+
+    removeBody: function( body ){
+
+      this.stage.removeChild( body );
+
+    },
+
     addBody: function( x, y, key, options ){
         var self = this;
 

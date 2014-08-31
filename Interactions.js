@@ -8,12 +8,24 @@ UIManager = (function(){
 
 
 
-    function UIManager( factory, DOMSelector ){
+    function UIManager( factory, DOMAnchorId ){
+
+        var _this = this;
 
         // Create sprites that will receive touch events
-        this.targets = {};
+
+        this.targets = {
+            byId: {},
+            active: [],
+            all: []
+        };
+
+        this.activeTarget = null;
+
+        this.targetGroups = {};
+
         this.factory = factory; // Pixi 2D context
-        this.DOMAnchor = document.getElementById(DOMSelector);
+        this.DOMAnchor = document.getElementById( DOMAnchorId );
 
         var screen = document.querySelector(".device-screen");
         var el = this.DOMAnchor;
@@ -36,49 +48,88 @@ UIManager = (function(){
         mc.add(new Hammer.Tap({ event: 'doubletap', taps: 2 }));
         mc.add(new Hammer.Tap());
 
-        mc.on("panstart panmove", onPan);
-        mc.on("rotatestart rotatemove", onRotate);
-        mc.on("pinchstart pinchmove", onPinch);
-        mc.on("swipe", onSwipe);
-        mc.on("tap", onTap);
-        mc.on("doubletap", onDoubleTap);
+        mc.on("panstart panmove panend", this.onPan.bind(this));
+        mc.on("rotatestart rotatemove rotateend", this.onRotate.bind(this));
+        mc.on("pinchstart pinchmove pinchend", this.onPinch.bind(this));
+        mc.on("swipe", this.onSwipe.bind(this));
+        mc.on("tap", this.onTap.bind(this));
+        mc.on("doubletap", this.onDoubleTap.bind(this));
 
-        mc.on("hammer.input", function(ev) {
+        mc.on("hammer.input", function( event ) {
+            console.log('hammer input',event);
 
+            // Set active target?
 
-            if (ev.isFinal) {
-                //resetElement();
-                console.log('hammer input final',ev);
-            } else {
-                console.log('hammer input',ev);
+            if (_this.activeTarget == null) {
+
+                var activeTarget = _this.checkForActivePoint( event.center.x, event.center.y );
+
+                if (activeTarget) _this.activeTarget = activeTarget;
+                console.log('activeTarget',_this.activeTarget);
             }
+
+//            if (ev.isFinal) {
+//                //resetElement();
+//                console.log('hammer input final',ev);
+//            } else {
+//                console.log('hammer input',ev);
+//            }
         });
 
     }
 
-    function onPan( event ){
+    UIManager.prototype = {
 
-    }
+        onPan: function ( event ){
+            if (event.isFinal) {
+                //resetElement();
+                console.log('onPan final',event);
+            } else {
+                console.log('onPan input',event);
+            }
+        },
 
-    function onRotate( event ){
+        onRotate: function ( event ){
 
-    }
+        },
 
-    function onPinch( event ){
+        onPinch: function ( event ){
 
-    }
+        },
 
-    function onSwipe( event ){
+        onSwipe: function ( event ){
 
-    }
+        },
 
-    function onTap( event ){
+        onTap: function ( event ){
+            if (event.isFinal) {
+                console.log('onTap final',event);
 
-    }
+                if (this.activeTarget!=null) {
+                    if (this.activeTarget.behaviors['tap']!=null) this.activeTarget.behaviors['tap'].onStop( event );
+                }
 
-    function onDoubleTap( event ){
+                this.activeTarget = null;
+            }
+        },
 
-    }
+        onDoubleTap: function ( event ){
+
+        }
+    };
+
+
+    UIManager.prototype.checkForActivePoint = function( x, y ){
+
+
+        var activeTarget = null;
+
+        _.each( this.targets.active, function( target ){
+            if (target.containsPoint( x, y )) activeTarget = target; return;
+        });
+
+        return activeTarget;
+    };
 
 
     UIManager.prototype.bindStageTarget = function( ctxKey ){
@@ -101,6 +152,31 @@ UIManager = (function(){
 
     // Move or scale hit area
 
+    UIManager.prototype.addBoxTarget = function( x, y, width, height, ctxKey ){
+
+        var newTarget = new BoxTarget( x, y, width, height, this.factory.contexts[ctxKey], this );
+
+        this.targets.all.push(newTarget);
+
+        return newTarget;
+    };
+
+
+
+    UIManager.prototype.setTargetGroup = function( groupKey, targets ) {
+
+        _.each( target, function( target ){
+
+        });
+
+    }
+
+
+    UIManager.prototype.checkEventOrigin = function(){
+
+        // Is point contained by an active target?
+
+    }
 
 
     UIManager.prototype.addRelativeTarget = function( ctxKey, targetKey, target ){
@@ -120,3 +196,83 @@ UIManager = (function(){
 
     return UIManager;
 })();
+
+function BoxTarget( x, y, width, height, context2D, manager ){
+
+    //console.log('BoxTarget',context2D);
+    this.manager = manager;
+
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+
+    this.active = false;
+
+    this.context = context2D;
+    this.graphics = null;
+
+    this.behaviors = {
+        tap: null,
+        pinch: null,
+        rotate: null,
+        swipe: null,
+        tap: null,
+        doubleTap: null
+    };
+
+
+    // generate corners to evaluate contained point
+    this.corners = [];
+
+    this.corners.push( [x,y], [x+width, y], [x, y+height], [x+width, y+height] );
+}
+
+BoxTarget.prototype = {
+
+    containsPoint: function( x, y ) {
+        return !(x < this.corners[0][0] || x > this.corners[3][0]
+            || y < this.corners[0][1] || y > this.corners[3][1] );
+    },
+
+    activate: function(){
+        this.graphics = this.context.addRectangle( this.x, this.y, this.width, this.height );
+        this.active = true;
+
+        this.manager.targets.active.push(this);
+    },
+
+    deactivate: function(){
+        this.context.removeBody( this.graphics );
+        this.active = false;
+
+        this.manager.targets.active = _.without(this.manager.targets.active, this);
+        console.log('targets after deactivation',this.manager.targets.active);
+    },
+
+    setBehavior: function( eventType, onStart, onUpdate, onStop ){
+
+        this.behaviors[eventType] = new Behavior( onStart, onUpdate, onStop );
+
+    }
+};
+
+
+function Behavior( onStart, onUpdate, onStop ){
+
+    this.onStart = onStart;
+    this.onUpdate = onUpdate;
+    this.onStop = onStop;
+}
+
+Behavior.prototype = {
+
+};
+
+
+function EventTargetGroup( key, targets ){
+
+    this.targets = targets;
+    this.active = false;
+
+}
