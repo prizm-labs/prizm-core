@@ -7,28 +7,44 @@ Body2D = (function() {
     function Body2D(ctx, x, y, key, options) {
 
         var body = {
-            'x': x,
-            'y': y,
-            'duration': 0,
-            ctx: ctx,
 
             _dep: new Deps.Dependency,
+            'x': x,
+            'y': y,
+
+            ctx: ctx,
+
+            animations: [],
 
             place: function (x, y, duration) {
 
                 this.x = x;
                 this.y = y;
-                this.duration = duration || 0;
 
+                this.registerAnimation( 'position', {
+                    x: x, y: y
+                }, duration || 0);
+
+                //this._dep.changed();
+            },
+
+//            position: function () {
+//                console.log(this.x + ',' + this.y);
+//                return [this.x, this.y];
+//            },
+
+            registerAnimation: function( attributeKey, attributeValues, duration){
+                this.animations.push( [attributeKey, attributeValues, duration] );
+                console.log('registerAnimation',this.animations);
+            },
+
+            runAnimations: function(){
                 this._dep.changed();
             },
-            position: function () {
-                console.log(this.x + ',' + this.y);
-                return [this.x, this.y];
-            },
+
             update: function(){
                 this._dep.depend();
-                this.ctx.moveBody( this );
+                this.ctx.updateBody( this );
             }
 
         };
@@ -62,23 +78,43 @@ Body3D = (function() {
             ctx: ctx,
             key: key,
 
-            place: function (x, y, z) {
+            animations: [],
+
+            place: function (x, y, z, duration) {
                 this.position = {
                     x: x, y: y, z: z
                 };
-                this._dep.changed();
+                //this._dep.changed();
+                this.registerAnimation( 'position', {
+                    x: x, y: y, z: z
+                }, duration || 0 );
+
+                this.runAnimations();
             },
 
-            rotate: function (x, y, z) {
+            rotate: function (x, y, z, duration) {
                 this.rotation = {
                     x: x, y: y, z: z
                 };
-                this._dep.changed();
+                //this._dep.changed();
+                this.registerAnimation( 'rotation', {
+                    x: x, y: y, z: z
+                }, duration || 0 );
+                this.runAnimations();
             },
 
             update: function() {
                 this._dep.depend();
                 this.ctx.updateBody( this );
+            },
+
+            registerAnimation: function( attributeKey, attributeValues, duration){
+                this.animations.push( [attributeKey, attributeValues, duration] );
+                console.log('registerAnimation',this.animations);
+            },
+
+            runAnimations: function(){
+                this._dep.changed();
             }
 
         };

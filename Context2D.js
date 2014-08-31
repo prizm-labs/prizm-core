@@ -123,9 +123,24 @@ Context2D.prototype = {
         body.position.x = x;
         body.position.y = y;
 
+        body.anchor.x = 0.5;
+        body.anchor.y = 0.5;
 
         this.stage.addChild(body);
 
+        console.log('sprite bounds',body.getLocalBounds());
+//        var graphics = new PIXI.Graphics();
+//
+//        //graphics.beginFill(0xFFFF00);
+//
+//// set the line style to have a width of 5 and set the color to red
+//        graphics.lineStyle(1, 0xFF0000);
+//
+//// draw a rectangle
+//        graphics.drawRect( x, y, width, height );
+//
+//        this.stage.addChild(graphics);
+//
         requestAnimationFrame(this.animate.bind(self));
 
         //TODO create UUID for a PixiJS Sprite
@@ -133,18 +148,44 @@ Context2D.prototype = {
         return this.entities.length-1;
     },
 
-    moveBody: function( body ){
+//    moveBody: function( body ){
+//
+//        //console.log('moveEntity', this.entities[body.id]);
+//        var entity = this.entities[body.id];
+//        var duration = body.duration;
+//
+//        if (duration==0) {
+//            entity.position = {x:body.x,y:body.y};
+//        } else {
+//            this.runAnimation(function(){
+//                TweenLite.to(entity.position, duration, {x:body.x,y:body.y});
+//            })
+//        }
+//    },
 
-        //console.log('moveEntity', this.entities[body.id]);
+    updateBody: function( body ){
+
         var entity = this.entities[body.id];
-        var duration = body.duration;
+        console.log('updateBody', entity, body);
 
-        if (duration==0) {
-            entity.position = {x:body.x,y:body.y};
-        } else {
-            this.runAnimation(function(){
-                TweenLite.to(entity.position, duration, {x:body.x,y:body.y});
-            })
+        if (body.animations.length>0){
+
+            _.each( body.animations, function( animation ){
+
+                var attribute = animation[0], values = animation[1], duration = animation[2];
+
+                if (duration==0) {
+                    _.each(values, function(value,key){
+                        entity[attribute][key] = value;
+                    });
+
+                    console.log(entity[attribute]);
+                } else {
+                    TweenLite.to(entity[attribute], duration, values );
+                }
+            });
+
+            body.animations = [];
         }
     },
 

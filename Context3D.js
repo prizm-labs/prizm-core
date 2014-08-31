@@ -136,9 +136,9 @@ Context3D.prototype = {
         console.log(this.materials);
     },
 
-    mapTabletopTexture: function( key ){
+    mapTabletopTexture: function( key, width, height ){
 
-        var geometry = new THREE.PlaneGeometry( 1200, 1200, 3, 3 );
+        var geometry = new THREE.PlaneGeometry( width, height );
         var material = this.materials[key];
 
         //material.ambient = new THREE.Color().setRGB(0.0196078431372549,0.0196078431372549,0.0196078431372549);
@@ -148,16 +148,16 @@ Context3D.prototype = {
         material.specular = new THREE.Color().setRGB(0.06666666666666667,0.06666666666666667,0.06666666666666667);
 
         var mesh = new THREE.Mesh(geometry, material);
-        mesh.position.x = 0;
-        mesh.position.y = 0;
-        mesh.position.z = 0;
+//        mesh.position.x = 0;
+//        mesh.position.y = 0;
+//        mesh.position.z = 0;
         mesh.receiveShadow  = true;
 
         this.scene.add( mesh );
 
         mesh.material.map.needsUpdate = true;
 
-        var scale = 0.75;
+        var scale = 0.5;
 
         mesh.scale.x = mesh.scale.x*scale;
         mesh.scale.y = mesh.scale.y*scale;
@@ -165,6 +165,11 @@ Context3D.prototype = {
 
 //        this.bodies['tabletop'].material = this.materials[key];
 //        this.bodies['tabletop'].material.map.needsUpdate = true;
+
+        var boxGeometry = new THREE.BoxGeometry( 20, 20, 20 );
+        var boxMaterial = new THREE.MeshLambertMaterial( { color: 0xFF0000 } );
+        var boxMesh = new THREE.Mesh( boxGeometry, boxMaterial );
+        this.scene.add( boxMesh );
     },
 
 
@@ -233,18 +238,28 @@ Context3D.prototype = {
 
     updateBody: function( body ){
 
-        //var entity = this.entities[body.id];
         var entity = this.scene.getObjectById( body.id );
-        console.log('updateBody', entity);
+        console.log('updateBody', entity, body);
 
-        this.runAnimation(function(){
-            TweenLite.to(entity.position, 2,
-                { x:body.position.x, y:body.position.y, z:body.position.z });
+        if (body.animations.length>0){
 
-            TweenLite.to(entity.rotation, 2,
-                { x:body.rotation.x, y:body.rotation.y, z:body.rotation.z });
-        })
+            _.each( body.animations, function( animation ){
 
+                var attribute = animation[0], values = animation[1], duration = animation[2];
+
+                if (duration==0) {
+                    _.each(values, function(value,key){
+                        entity[attribute][key] = value;
+                    });
+
+                    console.log(entity[attribute]);
+                } else {
+                    TweenLite.to(entity[attribute], duration, values );
+                }
+            });
+
+            body.animations = [];
+        }
     },
 
     render: function(){
