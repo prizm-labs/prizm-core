@@ -11,7 +11,7 @@ Package.on_use(function (api) {
   api.use("reactive-extra", ["client", "server"]);
 
   // vendor JS libraries
-  api.add_files(['vendor/pixi/pixi.dev.js', 'vendor/three/three.js', 'vendor/buzz/buzz.js'],['client']);
+  api.add_files(['vendor/pixi/pixi.dev.js', 'vendor/three/three.js', 'vendor/buzz/buzz.js', 'vendor/hammer/hammer.js'],['client']);
   api.add_files(['vendor/hashid/hashids.min.js', 'vendor/hashid/common.js'], ["client", "server"]);
   api.add_files(['vendor/gsap/TweenMax.js'],['client']);
 

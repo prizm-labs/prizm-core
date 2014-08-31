@@ -24,15 +24,16 @@ Context2D.prototype = {
         var self = this;
 
         if (this.config.type=='canvas') {
-            //this.renderer = new PIXI.CanvasRenderer(this.config.width, this.config.height, null, true);
-            this.renderer = new PIXI.CanvasRenderer(this.config.width, this.config.height, null);
+            this.renderer = new PIXI.CanvasRenderer(this.config.width, this.config.height, null, true);
+            //this.renderer = new PIXI.CanvasRenderer(this.config.width, this.config.height, null);
         } else if (this.config.type=='webgl') {
             this.renderer = new PIXI.WebGLRenderer(this.config.width, this.config.height, null, true);
         }
 
         this.DOMAnchor.appendChild(this.renderer.view);
 
-        this.stage = new PIXI.Stage(0x3da8bb, true);
+        this.stage = new PIXI.Stage();
+        //this.stage = new PIXI.Stage(0x3da8bb, true);
 
         //requestAnimationFrame(this.animate.bind(self));
 
