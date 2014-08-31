@@ -81,12 +81,21 @@ UIManager = (function(){
     UIManager.prototype = {
 
         onPan: function ( event ){
-            if (event.isFinal) {
-                //resetElement();
-                console.log('onPan final',event);
-            } else {
-                console.log('onPan input',event);
+            var phase;
+
+            switch( event.type ) {
+                case 'panstart':
+                    phase = 'start';
+                    break;
+                case 'panmove':
+                    phase = 'update';
+                    break;
+                case 'panend':
+                    phase = 'stop';
+                    break;
             }
+
+            this.onEvent( 'pan', phase, event );
         },
 
         onRotate: function ( event ){
@@ -102,19 +111,44 @@ UIManager = (function(){
         },
 
         onTap: function ( event ){
-            if (event.isFinal) {
-                console.log('onTap final',event);
+            var phase;
 
-                if (this.activeTarget!=null) {
-                    if (this.activeTarget.behaviors['tap']!=null) this.activeTarget.behaviors['tap'].onStop( event );
-                }
+            switch( event.type ) {
+                case 'tap':
+                    phase = 'stop';
+                    break;
 
-                this.activeTarget = null;
             }
+
+            this.onEvent( 'tap', phase, event );
         },
 
         onDoubleTap: function ( event ){
 
+        },
+
+        onEvent: function( eventType, phase, event ){
+
+            if (this.activeTarget!=null) {
+
+                var behavior = this.activeTarget.behaviors[eventType] || null;
+
+                if (behavior!=null) {
+
+                    switch( phase ){
+                        case 'start':
+                            if (behavior.onStart!=null) this.activeTarget.behaviors[eventType].onStart( event );
+                            break;
+                        case 'update':
+                            if (behavior.onUpdate!=null) this.activeTarget.behaviors[eventType].onUpdate( event );
+                            break;
+                        case 'stop':
+                            if (behavior.onStop!=null) this.activeTarget.behaviors[eventType].onStop( event );
+                            this.activeTarget = null;
+                            break;
+                    }
+                }
+            }
         }
     };
 
