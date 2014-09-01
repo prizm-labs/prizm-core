@@ -16,7 +16,7 @@ Package.on_use(function (api) {
   api.add_files(['vendor/gsap/TweenMax.js'],['client']);
 
   // PRIZM classes
-  api.add_files(['Context2D.js','Context3D.js','Bodies.js','Factory.js', 'Nodes.js', 'Interactions.js', 'Sound.js'],['client']);
+  api.add_files(['Context2D.js','Context3D.js','Bodies.js','Factory.js', 'Nodes.js', 'Interactions.js', 'Sound.js', 'Cameras.js'],['client']);
   api.add_files(['classes/pieceLocation.js'],['client', 'server']);
 
   // bundle & exports

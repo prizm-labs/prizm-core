@@ -26,12 +26,8 @@ Body2D = (function() {
                 }, duration || 0);
 
                 //this._dep.changed();
+                this.runAnimations();
             },
-
-//            position: function () {
-//                console.log(this.x + ',' + this.y);
-//                return [this.x, this.y];
-//            },
 
             registerAnimation: function( attributeKey, attributeValues, duration){
                 this.animations.push( [attributeKey, attributeValues, duration] );
@@ -46,6 +42,11 @@ Body2D = (function() {
                 this._dep.depend();
                 this.ctx.updateBody( this );
             }
+
+//            position: function () {
+//                console.log(this.x + ',' + this.y);
+//                return [this.x, this.y];
+//            },
 
         };
 
@@ -84,7 +85,7 @@ Body3D = (function() {
                 this.position = {
                     x: x, y: y, z: z
                 };
-                //this._dep.changed();
+
                 this.registerAnimation( 'position', {
                     x: x, y: y, z: z
                 }, duration || 0 );
@@ -96,7 +97,7 @@ Body3D = (function() {
                 this.rotation = {
                     x: x, y: y, z: z
                 };
-                //this._dep.changed();
+
                 this.registerAnimation( 'rotation', {
                     x: x, y: y, z: z
                 }, duration || 0 );
