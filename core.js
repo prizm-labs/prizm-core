@@ -13,6 +13,9 @@ PRIZM = {
     Node: Node,
     NodeMatrix: NodeMatrix,
 
+    View: View,
+    ViewManager: ViewManager,
+
     UIManager: UIManager,
     SoundManager: SoundManager,
     CameraManager: CameraManager,
