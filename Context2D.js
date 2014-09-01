@@ -1,4 +1,4 @@
-Context2D = function( DOMElementId, renderType, height, width ) {
+Context2D = function( DOMElementId, renderType, width, height ) {
 
     this.config = {
         type: renderType,

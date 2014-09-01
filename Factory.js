@@ -15,12 +15,12 @@ Factory = (function() {
         },
 
         // manifest: [ key, geometry, texture ]
-        loadTemplates3D: function (manifest) {
+        loadTemplates3D: function ( manifest, ctxKey) {
             var _this = this;
             console.log('loadTemplates3D', manifest);
 
             _.each(manifest, function (model, index) {
-                _this.ctx3D.load(model);
+                _this.contexts[ctxKey].load(model);
                 console.log(index);
 
             })
@@ -52,9 +52,13 @@ Factory = (function() {
             return body;
         },
 
-        makeCamera3D: function ( ctxKey, x, y, z, options ) {
+        makeCamera3D: function ( ctx3DKey, x, y, z, fov, near, far ) {
 
-            return this.makeBody3D( ctxKey, 'camera', x, y, z, options );
+            var aspect = this.contexts[ctx3DKey].options.width/ this.contexts[ctx3DKey].options.height;
+
+            var cameraOptions = [ fov, aspect, near, far ];
+
+            return this.makeBody3D( ctx3DKey, 'camera', x, y, z, cameraOptions );
             //return null;
         }
 

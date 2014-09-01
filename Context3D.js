@@ -1,6 +1,6 @@
 var THREE = _THREE;
 
-Context3D = function( DOMElementId, height, width ) {
+Context3D = function( DOMElementId, width, height ) {
 
     this.options = {
         height: height,
@@ -137,6 +137,7 @@ Context3D.prototype = {
         mesh.scale.z = mesh.scale.z*scale;
 
         this.scene.add( mesh );
+        console.log('tabletop mesh',mesh, width, height);
 
         // trigger mapping of 2D canvas
         mesh.material.map.needsUpdate = true;
