@@ -3,22 +3,9 @@
  */
 Factory = (function() {
 
-    function Factory( context2D, context3D, dependency ) {
-
-        this.ctx2D = context2D || null;
-        this.ctx3D = context3D || null;
+    function Factory() {
 
         this.contexts = {};
-
-        this.dependency = dependency;
-
-
-        this.templates2D = {};
-        //this.bodies2D = [];
-
-
-        this.templates3D = {};
-        //this.bodies3D = [];
     }
 
     Factory.prototype = {

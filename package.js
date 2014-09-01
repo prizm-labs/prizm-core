@@ -8,12 +8,14 @@ Package.on_use(function (api) {
   api.use(["deps", "ejson", "underscore"], ["client", "server"]);
 
   // vendor packages
-  api.use("reactive-extra", ["client", "server"]);
+  api.use(["lodash"], ["client", "server"]);
 
   // vendor JS libraries
-  api.add_files(['vendor/pixi/pixi.dev.js', 'vendor/three/three.js', 'vendor/buzz/buzz.js', 'vendor/hammer/hammer.js'],['client']);
-  api.add_files(['vendor/hashid/hashids.min.js', 'vendor/hashid/common.js'], ["client", "server"]);
-  api.add_files(['vendor/gsap/TweenMax.js'],['client']);
+  api.add_files(['vendor/pixi/pixi.dev.js', 'vendor/three/three.js',
+      'vendor/buzz/buzz.js', 'vendor/hammer/hammer.js','vendor/gsap/TweenMax.js'
+      ],['client']);
+  api.add_files(['vendor/hashid/hashids.min.js', 'vendor/hashid/common.js',
+      'vendor/fsm/state-machine.js','vendor/fsm/machina.js'], ["client", "server"]);
 
   // PRIZM classes
   api.add_files(['Context2D.js','Context3D.js','Bodies.js','Factory.js', 'Nodes.js', 'Interactions.js', 'Sound.js', 'Cameras.js'],['client']);

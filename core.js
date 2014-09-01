@@ -15,5 +15,7 @@ PRIZM = {
 
     UIManager: UIManager,
     SoundManager: SoundManager,
-    CameraManager: CameraManager
+    CameraManager: CameraManager,
+
+    StateMachine: machina
 };
