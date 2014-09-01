@@ -65,21 +65,21 @@ Context3D.prototype = {
 
         this.scene = new THREE.Scene();
 
-        // TODO camera setup
-
-//        this.addCamera( [75, this.options.width / this.options.height, 0.1, 2000] );
-//
-//        this.camera = this.cameras[0];
-//        this.camera.position.z = 500;
-//        this.camera.position.y = -500;
-//        this.camera.rotation.x = Math.PI/4;
-//
-//
-//        console.log(this.camera);
-
-
         // TODO light setup
+        this.setGlobalLights();
 
+
+        // TODO setup renderer
+        this.renderer = new THREE.WebGLRenderer( { alpha: true } );
+        this.renderer.setClearColor( 0x000000, 0 );
+        this.renderer.setSize( this.options.width, this.options.height );
+
+
+        this.DOMAnchor.appendChild( this.renderer.domElement );
+        //TweenLite.ticker.addEventListener("tick", this.render.bind(this));
+    },
+
+    setGlobalLights: function(){
         var light = new THREE.DirectionalLight();
         light.intensity = 0.7;
         light.castShadow = true;
@@ -90,25 +90,6 @@ Context3D.prototype = {
         // 0x909090
         var lightAmbient = new THREE.AmbientLight( 0xffffff );
         this.scene.add( lightAmbient );
-
-
-        // TODO Floor setup
-//        var tabletop = this.templates.tabletop(1200,1200);
-//        tabletop.position.set(0,0,0);
-//        this.scene.add( tabletop );
-//        this.bodies['tabletop'] = tabletop;
-
-
-        // TODO setup renderer
-        this.renderer = new THREE.WebGLRenderer( { alpha: true } );
-        this.renderer.setClearColor( 0x000000, 0 );
-        this.renderer.setSize( this.options.width, this.options.height );
-
-
-
-        this.DOMAnchor.appendChild( this.renderer.domElement );
-
-        //TweenLite.ticker.addEventListener("tick", this.render.bind(this));
     },
 
     setActiveCamera: function( camera ){
@@ -136,40 +117,29 @@ Context3D.prototype = {
         console.log(this.materials);
     },
 
-    mapTabletopTexture: function( key, width, height ){
+    mapTabletopTexture: function( key, width, height, scale ){
 
         var geometry = new THREE.PlaneGeometry( width, height );
         var material = this.materials[key];
 
-        //material.ambient = new THREE.Color().setRGB(0.0196078431372549,0.0196078431372549,0.0196078431372549);
         material.color = new THREE.Color().setRGB(1,1,1);
         material.ambient = new THREE.Color().setRGB(1,1,1);
-
         material.specular = new THREE.Color().setRGB(0.06666666666666667,0.06666666666666667,0.06666666666666667);
 
         var mesh = new THREE.Mesh(geometry, material);
-//        mesh.position.x = 0;
-//        mesh.position.y = 0;
-//        mesh.position.z = 0;
+        mesh.position.x = 0;
+        mesh.position.y = 0;
+        mesh.position.z = 0;
         mesh.receiveShadow  = true;
-
-        this.scene.add( mesh );
-
-        mesh.material.map.needsUpdate = true;
-
-        var scale = 0.5;
 
         mesh.scale.x = mesh.scale.x*scale;
         mesh.scale.y = mesh.scale.y*scale;
         mesh.scale.z = mesh.scale.z*scale;
 
-//        this.bodies['tabletop'].material = this.materials[key];
-//        this.bodies['tabletop'].material.map.needsUpdate = true;
+        this.scene.add( mesh );
 
-        var boxGeometry = new THREE.BoxGeometry( 20, 20, 20 );
-        var boxMaterial = new THREE.MeshLambertMaterial( { color: 0xFF0000 } );
-        var boxMesh = new THREE.Mesh( boxGeometry, boxMaterial );
-        this.scene.add( boxMesh );
+        // trigger mapping of 2D canvas
+        mesh.material.map.needsUpdate = true;
     },
 
 
@@ -198,7 +168,6 @@ Context3D.prototype = {
                 return mesh;
             };
 
-            //_this.scene.add(mesh);
             console.log('geometry loaded');
         };
 
@@ -219,8 +188,6 @@ Context3D.prototype = {
     addBody: function( key, x, y, z, options ){
         console.log('addEntities',x,y,z);
 
-        var self = this;
-
         var body = this.templates[key](options) || new THREE.Mesh( this.geometries.cube, this.materials.default );
         //var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 
@@ -230,9 +197,7 @@ Context3D.prototype = {
 
         this.scene.add( body );
 
-
         //requestAnimationFrame(this.render.bind(self));
-
         return body.id;
     },
 

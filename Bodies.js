@@ -131,19 +131,3 @@ Body3D = (function() {
 
     return Body3D;
 })();
-
-
-function Camera(){
-
-    var body = new ReactiveObject({
-        position: {
-            x: x, y: y, z: z
-        },
-        rotation: {
-            x: 0, y: 0, z: 0
-        }
-    });
-
-    return body;
-
-}
