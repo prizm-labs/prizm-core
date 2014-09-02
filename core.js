@@ -20,5 +20,7 @@ PRIZM = {
     SoundManager: SoundManager,
     CameraManager: CameraManager,
 
-    StateMachine: machina
+    StateMachine: machina,
+
+    LiveData: LiveDataDelegate
 };
