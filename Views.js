@@ -42,7 +42,7 @@ ViewManager = (function(){
 
 View = (function(){
 
-    function View( width, height, contexts ){
+    function View( width, height ) {
 
         this.allContextsLoaded = false;
 
@@ -52,18 +52,19 @@ View = (function(){
         this.factory = new Factory();
         this.contexts = {};
 
-        this.uiManager = null;
+        this.UI = null;
         this.soundManager = null;
 
-        this.onStartup = function(){};
+        this.onStartup = function () {
+        };
 
-        _.each( contexts, function( context ){
-
-
-        });
     }
 
     View.prototype = {
+
+        createUIManager: function( UIDOMAnchorId ){
+            this.UI = new UIManager( this.factory, UIDOMAnchorId );
+        },
 
         present: function(){
 
@@ -97,11 +98,11 @@ View = (function(){
             // TODO notify templates loaded !!!
         },
 
-        bindContextToFactory: function( ctx, key ){
+        bindContextToFactory: function( ctx, key ) {
 
             ctx.init();
             this.contexts[key] = ctx;
-            this.factory.registerContext( key, ctx);
+            this.factory.registerContext(key, ctx);
         }
 
     };

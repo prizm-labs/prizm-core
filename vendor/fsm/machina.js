@@ -5,8 +5,6 @@
  * Url: http://machina-js.org/
  * License(s): MIT, GPL
  */
-console.log('lodash internal', lodash);
-
 machina = (function (root, factory) {
     // if (typeof define === "function" && define.amd) {
     //     // AMD. Register as an anonymous module.

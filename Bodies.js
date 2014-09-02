@@ -18,11 +18,13 @@ Body2D = (function() {
 
             place: function (x, y, duration) {
 
-                this.x = x;
-                this.y = y;
+                console.log(x!=null,y!=null);
+
+                this.x = x!=null ? x : this.x;
+                this.y = y!=null ? y : this.y;
 
                 this.registerAnimation( 'position', {
-                    x: x, y: y
+                    x: this.x, y: this.y
                 }, duration || 0);
 
                 //this._dep.changed();

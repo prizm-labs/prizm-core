@@ -18,7 +18,7 @@ Factory = (function() {
         loadTemplates3D: function ( manifest, ctxKey) {
             var _this = this;
             console.log('loadTemplates3D', manifest);
-
+            new Meteor.Collection("pieces");
             _.each(manifest, function (model, index) {
                 _this.contexts[ctxKey].load(model);
                 console.log(index);

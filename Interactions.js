@@ -27,6 +27,8 @@ UIManager = (function(){
         this.factory = factory; // Pixi 2D context
         this.DOMAnchor = document.getElementById( DOMAnchorId );
 
+        console.log('Hammer DOMAnchor',this.DOMAnchor);
+
         var screen = document.querySelector(".device-screen");
         var el = this.DOMAnchor;
 
@@ -186,7 +188,7 @@ UIManager = (function(){
 
     // Move or scale hit area
 
-    UIManager.prototype.addBoxTarget = function( x, y, width, height, ctxKey ){
+    UIManager.prototype.addBoxTarget = function( x, y, width, height, ctxKey, groupKey ){
 
         var newTarget = new BoxTarget( x, y, width, height, this.factory.contexts[ctxKey], this );
 
@@ -198,9 +200,10 @@ UIManager = (function(){
 
 
     UIManager.prototype.setTargetGroup = function( groupKey, targets ) {
-
-        _.each( target, function( target ){
-
+        var _this = this;
+        if (typeof this.targetGroups[groupKey]=="undefined") this.targetGroups[groupKey] = [];
+        _.each( targets, function( target ){
+            _this.targetGroups[groupKey].push(target);
         });
 
     }
