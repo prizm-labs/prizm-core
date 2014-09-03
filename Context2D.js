@@ -163,10 +163,26 @@ Context2D.prototype = {
 //        }
 //    },
 
+    updateBodyDirect: function( body, attributes ){
+
+        var entity = this.entities[body.id];
+
+        _.each( attributes, function( values, key ){
+
+            _.each( values, function( v, k ){
+
+                entity[key][k] = v;
+
+            });
+
+        });
+
+    },
+
     updateBody: function( body ){
 
         var entity = this.entities[body.id];
-        console.log('updateBody', entity, body);
+        //console.log('updateBody', entity, body);
 
         if (body.animations.length>0){
 
@@ -179,7 +195,7 @@ Context2D.prototype = {
                         entity[attribute][key] = value;
                     });
 
-                    console.log(entity[attribute]);
+                    //console.log(entity[attribute]);
                 } else {
                     TweenLite.to(entity[attribute], duration, values );
                 }

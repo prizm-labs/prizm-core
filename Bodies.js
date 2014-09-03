@@ -18,7 +18,7 @@ Body2D = (function() {
 
             place: function (x, y, duration) {
 
-                console.log(x!=null,y!=null);
+                //console.log(x!=null,y!=null);
 
                 this.x = x!=null ? x : this.x;
                 this.y = y!=null ? y : this.y;

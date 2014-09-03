@@ -23,7 +23,7 @@ LiveDataDelegate = function(){
 
         updateSubscriptions: function( ddpMsg ){
 
-            console.log('updateSubscriptions',ddpMsg);
+            //console.log('updateSubscriptions',ddpMsg);
             //if id matches subscription, call translation
             // ex:  { "msg":"changed",
             // "collection":"nodes",
