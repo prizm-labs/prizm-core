@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "shape2d": {
+      "version": "0.0.5",
+      "dependencies": {
+        "interpolation": {
+          "version": "0.0.1"
+        },
+        "klasse": {
+          "version": "1.0.8"
+        },
+        "vecmath": {
+          "version": "0.1.2"
+        }
+      }
+    }
+  }
+}

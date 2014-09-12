@@ -42,9 +42,12 @@ ViewManager = (function(){
 
 View = (function(){
 
-    function View( width, height ) {
+    function View( key, width, height ) {
+        var self = this;
 
         this.allContextsLoaded = false;
+
+        this.key = key;
 
         this.width = width;
         this.height = height;
@@ -58,6 +61,33 @@ View = (function(){
         this.onStartup = function () {
         };
 
+        this.preloadQueue = [];
+
+        this.locations = {
+            center: function(){
+                return { x: self.width/2, y: self.height/2}
+            },
+            corners: function(){
+                return [
+                    { x: 0, y:0 },
+                    { x: self.width, y:0 },
+                    { x: self.width, y: self.height },
+                    { x:0, y: self.height }
+                ]
+            }
+        }
+
+        // notify client that all view's contexts are preloaded
+        amplify.subscribe('preloadContext', function( data ){
+            console.log('preloadContext', data);
+            self.preloadQueue = _.without(self.preloadQueue, data.entry);
+            console.log('preloadContext after entry removed',self.preloadQueue.length);
+
+            if (self.preloadQueue.length==0){
+                amplify.publish('preloadView',{view:self.key})
+            }
+
+        });
     }
 
     View.prototype = {
@@ -80,13 +110,31 @@ View = (function(){
 
         },
 
+        preload: function(){
+            var self = this;
+            console.log('View preload',this);
+            // execute preload for each context in queue
+            _.each(this.preloadQueue, function(entry){
+                if (entry[0]==='2D') {
+                    self.factory.loadTemplates2D( entry[1], entry[2], entry[3], function(){
+                        console.log('loadTemplates2D callback',entry);
+                        amplify.publish('preloadContext',{entry:entry});
+                    });
+                }
+
+            });
+
+            //TODO preload sounds !!!
+        },
+
         createContext2D: function( key, DOMAnchorId, renderingType, manifest, atlasPath, width, height ){
 
             var ctx2D =  new Context2D( DOMAnchorId, renderingType, width || this.width, height || this.height );
             this.bindContextToFactory( ctx2D, key );
-            this.factory.loadTemplates2D( key, atlasPath, manifest );
 
-            // TODO notify templates loaded !!!
+            // create preload queue entry
+            //this.factory.loadTemplates2D( key, atlasPath, JSON.parse(Assets.getText(manifest)) );
+            this.preloadQueue.push( ['2D', key, atlasPath, manifest] );
         },
 
         createContext3D: function( key, DOMAnchorId, manifest ){

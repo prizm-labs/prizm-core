@@ -5,10 +5,12 @@ Package.describe({
 
 Package.on_use(function (api) {
   // default packages
-  api.use(["deps", "ejson", "underscore"], ["client", "server"]);
+  api.use(["deps", "ejson", "underscore","amplify"], ["client", "server"]);
 
   // vendor packages
   api.use(["lodash"], ["client", "server"]);
+
+  Npm.depends({"shape2d":"0.0.5"});
 
   // vendor JS libraries
   api.add_files(['vendor/pixi/pixi.dev.js', 'vendor/three/three.js',
@@ -19,12 +21,15 @@ Package.on_use(function (api) {
 
   // PRIZM classes
   api.add_files(['Context2D.js','Context3D.js','Bodies.js','Factory.js',
-      'Nodes.js', 'Interactions.js', 'Sound.js', 'Cameras.js', 'Views.js'],['client']);
+      'Nodes.js', 'Interactions.js', 'Sound.js', 'Cameras.js', 'Views.js', 'GameWorld.js'],['client']);
   api.add_files(['classes/pieceLocation.js','LiveData.js'],['client', 'server']);
 
   // bundle & exports
   api.add_files(['core.js'], ['client']);
   api.export("PRIZM",['client']);
+
+  api.add_files(['vendor/shape2d/shape2d.js'],['server']);
+  api.export("Shape",['server']);
 });
 
 Package.on_test(function (api) {

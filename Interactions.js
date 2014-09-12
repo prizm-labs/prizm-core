@@ -1,9 +1,6 @@
 /**
  * Created by michaelgarrido on 8/28/14.
  */
-
-console.log('hammer internal',Hammer);
-
 UIManager = (function(){
 
 

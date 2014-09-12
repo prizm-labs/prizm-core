@@ -9,12 +9,17 @@ Body2D = (function() {
         var body = {
 
             _dep: new Deps.Dependency,
-            'x': x,
-            'y': y,
+            id: null,
+            x: x,
+            y: y,
+            rotation: 0,
+            scale: 1,
 
             ctx: ctx,
 
             animations: [],
+
+            children: [],
 
             place: function (x, y, duration) {
 
@@ -22,6 +27,8 @@ Body2D = (function() {
 
                 this.x = x!=null ? x : this.x;
                 this.y = y!=null ? y : this.y;
+
+
 
                 this.registerAnimation( 'position', {
                     x: this.x, y: this.y
@@ -43,6 +50,15 @@ Body2D = (function() {
             update: function(){
                 this._dep.depend();
                 this.ctx.updateBody( this );
+            },
+
+            entity: function(){
+                return this.ctx.getEntity(this.id);
+            },
+
+            addChild: function( body2D ){
+                this.children.push(body2D);
+                this.ctx.addChildToGroup( this.id, body2D.entity() );
             }
 
 //            position: function () {
@@ -52,7 +68,12 @@ Body2D = (function() {
 
         };
 
-        body.id = ctx.addBody(body.x, body.y, key, options);
+        if (key==='group'){
+            body.id = ctx.addGroup(body.x, body.y);
+        } else {
+            body.id = ctx.addBody(body.x, body.y, key, options);
+        }
+
 
         Deps.autorun(function(c){
             body.update();

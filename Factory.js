@@ -29,10 +29,10 @@ Factory = (function() {
             //globalDep.changed();
         },
 
-        loadTemplates2D: function( ctxKey, file, manifest ){
+        loadTemplates2D: function( ctxKey, file, manifest, callback ){
 
             //ctx2D.load( file, manifest );
-            this.contexts[ctxKey].load( file, manifest );
+            this.contexts[ctxKey].load( file, manifest, callback );
         },
 
         makeBody3D: function ( ctxKey, bodyKey, x, y, z, options ) {
@@ -50,6 +50,12 @@ Factory = (function() {
             var body = new Body2D( this.contexts[ctxKey], properties.x, properties.y, bodyKey, options );
 
             return body;
+        },
+
+        makeGroup2D: function( ctxKey, properties ){
+            var group = new Body2D( this.contexts[ctxKey], properties.x, properties.y, 'group');
+
+            return group;
         },
 
         makeCamera3D: function ( ctx3DKey, x, y, z, fov, near, far ) {

@@ -13,6 +13,7 @@ PRIZM = {
     Node: Node,
     NodeMatrix: NodeMatrix,
 
+    GameWorld: GameWorld,
     View: View,
     ViewManager: ViewManager,
 

@@ -12,20 +12,27 @@ Context2D = function( DOMElementId, renderType, width, height ) {
     this.renderer = null;
     this.stage = null;
 
-    this.entities = [];
+    //this.entities = [];
+    this.entities = {};
 
     this.locations = {};
+
+
 };
 
 Context2D.prototype = {
 
-    init: function() {
+    init: function( isBackgroundTransparent ) {
 
         var self = this;
 
         if (this.config.type=='canvas') {
-            this.renderer = new PIXI.CanvasRenderer(this.config.width, this.config.height, null, true);
-            //this.renderer = new PIXI.CanvasRenderer(this.config.width, this.config.height, null);
+
+            this.renderer = new PIXI.CanvasRenderer(
+                this.config.width, this.config.height,
+                null, isBackgroundTransparent||null);
+            // Allow transparent background
+
         } else if (this.config.type=='webgl') {
             this.renderer = new PIXI.WebGLRenderer(this.config.width, this.config.height, null, true);
         }
@@ -40,13 +47,25 @@ Context2D.prototype = {
         TweenLite.ticker.addEventListener("tick", this.animate.bind(this));
     },
 
-    load: function( file, manifest ){
+    setBackgroundColor: function( color ){
+        console.log('setBackgroundColor',color);
+        if (typeof color === 'string') {
+            color = parseInt(color.replace(/^#/, ''), 16);
+        }
+        console.log('color converter to hex',color);
+        this.stage.setBackgroundColor(color);
+        this.animate();
+    },
+
+    load: function( file, manifest, callback, isCrossOrigin ){
 
         console.log('2D load', file, manifest);
         var _this = this;
 
-        var assetsToLoader = [file];
-        var loader = new PIXI.AssetLoader(assetsToLoader);
+        isCrossOrigin = isCrossOrigin || false;
+
+        var assetsToLoader = (typeof file== "string") ? [file] : file;
+        var loader = new PIXI.AssetLoader(assetsToLoader, isCrossOrigin);
         loader.onProgress = onLoadProgress;
         loader.onComplete = onLoadComplete;
         loader.load();
@@ -60,7 +79,7 @@ Context2D.prototype = {
                 var template;
 
                 if (typeof image == "string") { // single image for sprite
-
+                    console.log('image path',image);
                     template = function(){
                         return new PIXI.Sprite(PIXI.Texture.fromImage(image));
                     };
@@ -78,7 +97,7 @@ Context2D.prototype = {
 
             });
 
-            GameState.set('2D',true);
+            callback(); // Notify view that context preloaded
         }
 
         function onLoadProgress( loader ) {
@@ -111,8 +130,35 @@ Context2D.prototype = {
 
     removeBody: function( body ){
 
-      this.stage.removeChild( body );
+        this.stage.removeChild( body );
 
+    },
+
+    addGroup: function( x, y, bodies ){
+        var container = new PIXI.DisplayObjectContainer();
+
+        container.position.x = x;
+        container.position.y = y;
+
+        if (typeof bodies==='object'&&bodies.length>0){
+            _.each(bodies, function(body){
+                container.addChild(body);
+            })
+        }
+
+        this.stage.addChild(container);
+
+        var uuid = Meteor.uuid();
+        this.entities[uuid]=container;
+
+        return uuid;
+    },
+
+    addChildToGroup: function( id, body ){
+        var group = this.getEntity(id);
+        //_.each(bodies, function( body ){
+            group.addChild(body);
+        //})
     },
 
     addBody: function( x, y, key, options ){
@@ -123,8 +169,17 @@ Context2D.prototype = {
         body.position.x = x;
         body.position.y = y;
 
+        if (options.scale){
+            body.scale.x = body.scale.x*options.scale;
+            body.scale.y = body.scale.y*options.scale;
+        }
+
+        if (options.rotation)
+            body.rotation = options.rotation;
+
         body.anchor.x = 0.5;
         body.anchor.y = 0.5;
+
 
         this.stage.addChild(body);
 
@@ -143,9 +198,34 @@ Context2D.prototype = {
 //
         requestAnimationFrame(this.animate.bind(self));
 
-        //TODO create UUID for a PixiJS Sprite
-        this.entities.push(body);
-        return this.entities.length-1;
+        //Create UUID for a PixiJS Sprite
+        var uuid = Meteor.uuid();
+        this.entities[uuid]=body;
+        return uuid;
+    },
+
+    //http://www.goodboydigital.com/pixi-js-brings-canvas-and-webgl-masking/
+    maskBody: function( body, maskOptions ){
+
+        //{ shape: "circle", position: {x:0,y:0}, size: 10}
+
+        var mask = new PIXI.Graphics();
+        mask.beginFill();
+
+        if (maskOptions.shape=='circle'){
+            mask.drawCircle( maskOptions.position.x,
+                maskOptions.position.y, maskOptions.size);
+        } else if (maskOptions.shape=='rectangle') {
+
+        }
+
+        mask.endFill();
+
+        this.stage.addChild(mask);
+
+        // the magic line!
+        body.mask = mask;
+
     },
 
 //    moveBody: function( body ){
@@ -169,14 +249,25 @@ Context2D.prototype = {
 
         _.each( attributes, function( values, key ){
 
-            _.each( values, function( v, k ){
+            if (typeof values === 'object') {
+                // only for 'position'
+                _.each( values, function( v, k ){
 
-                entity[key][k] = v;
+                    entity[key][k] = v;
 
-            });
+                });
+            } else {
+                entity[key] = values;
+            }
+
+
 
         });
 
+    },
+
+    getEntity: function( id ){
+        return this.entities[id];
     },
 
     updateBody: function( body ){
