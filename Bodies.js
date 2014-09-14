@@ -71,8 +71,8 @@ Body2D = (function () {
                 this.entity().pivot.y = y;
             },
 
-            registerAnimation: function (attributeKey, attributeValues, duration) {
-                this.animations.push([attributeKey, attributeValues, duration]);
+            registerAnimation: function (attributeKey, attributeValues, duration, options) {
+                this.animations.push([attributeKey, attributeValues, duration, options]);
                 console.log('registerAnimation', this.animations);
             },
 

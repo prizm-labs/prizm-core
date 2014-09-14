@@ -295,8 +295,9 @@ Context2D.prototype = {
 
             _.each(body.animations, function (animation) {
 
-                var attribute = animation[0], values = animation[1], duration = animation[2];
-                console.log(entity[attribute],values);
+                var attribute = animation[0], values = animation[1],
+                    duration = animation[2], options=animation[3];
+                //console.log(entity[attribute],values);
 
                 if (duration == 0) {
 
@@ -316,13 +317,22 @@ Context2D.prototype = {
 
                     if (typeof values === 'object') {
                         // i.e. position
-                        timeline.add( TweenLite.to(entity[attribute], duration, values) );
+                        if (options){
+                            if (options.parallel) TweenLite.to(entity[attribute], duration, values)
+                        } else {
+                            timeline.add( TweenLite.to(entity[attribute], duration, values) );
+                        }
 
                     } else {
                         // i.e. alpha, rotation
                         var obj = {};
                         obj[attribute]=values;
-                        timeline.add( TweenLite.to(entity, duration, obj) );
+
+                        if (options){
+                            if (options.parallel) TweenLite.to(entity, duration, obj);
+                        } else {
+                            timeline.add( TweenLite.to(entity, duration, obj) );
+                        }
                     }
 
 
