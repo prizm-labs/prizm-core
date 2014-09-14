@@ -2,9 +2,9 @@
  * Created by michaelgarrido on 9/1/14.
  */
 
-ViewManager = (function(){
+ViewManager = (function () {
 
-    function ViewManager( screenType, screenWidth, screenHeight ){
+    function ViewManager(screenType, screenWidth, screenHeight) {
 
         this.screenType = screenType;
         this.screenWidth = screenWidth;
@@ -16,21 +16,18 @@ ViewManager = (function(){
 
     ViewManager.prototype = {
 
-        addView: function(){
+        addView: function () {
 
 
         },
 
-        presentView: function(){
-
+        presentView: function () {
 
 
         },
 
 
-        init: function(){
-
-
+        init: function () {
 
 
         }
@@ -40,9 +37,9 @@ ViewManager = (function(){
     return ViewManager;
 })();
 
-View = (function(){
+View = (function () {
 
-    function View( key, width, height ) {
+    function View(key, width, height) {
         var self = this;
 
         this.allContextsLoaded = false;
@@ -64,27 +61,27 @@ View = (function(){
         this.preloadQueue = [];
 
         this.locations = {
-            center: function(){
-                return { x: self.width/2, y: self.height/2}
+            center: function () {
+                return { x: self.width / 2, y: self.height / 2}
             },
-            corners: function(){
+            corners: function () {
                 return [
-                    { x: 0, y:0 },
-                    { x: self.width, y:0 },
+                    { x: 0, y: 0 },
+                    { x: self.width, y: 0 },
                     { x: self.width, y: self.height },
-                    { x:0, y: self.height }
+                    { x: 0, y: self.height }
                 ]
             }
         }
 
         // notify client that all view's contexts are preloaded
-        amplify.subscribe('preloadContext', function( data ){
+        amplify.subscribe('preloadContext', function (data) {
             console.log('preloadContext', data);
             self.preloadQueue = _.without(self.preloadQueue, data.entry);
-            console.log('preloadContext after entry removed',self.preloadQueue.length);
+            console.log('preloadContext after entry removed', self.preloadQueue.length);
 
-            if (self.preloadQueue.length==0){
-                amplify.publish('preloadView',{view:self.key})
+            if (self.preloadQueue.length == 0) {
+                amplify.publish('preloadView', {view: self.key})
             }
 
         });
@@ -92,33 +89,33 @@ View = (function(){
 
     View.prototype = {
 
-        createUIManager: function( UIDOMAnchorId ){
-            this.UI = new UIManager( this.factory, UIDOMAnchorId );
+        createUIManager: function (UIDOMAnchorId) {
+            this.UI = new UIManager(this.factory, UIDOMAnchorId);
         },
 
-        present: function(){
+        present: function () {
 
             // show display of all contexts
             // setup UI / Sound bindings
 
         },
 
-        resign: function(){
+        resign: function () {
 
             // hide display of all contexts
             // teardown UI / Sound bindings
 
         },
 
-        preload: function(){
+        preload: function () {
             var self = this;
-            console.log('View preload',this);
+            console.log('View preload', this);
             // execute preload for each context in queue
-            _.each(this.preloadQueue, function(entry){
-                if (entry[0]==='2D') {
-                    self.factory.loadTemplates2D( entry[1], entry[2], entry[3], function(){
-                        console.log('loadTemplates2D callback',entry);
-                        amplify.publish('preloadContext',{entry:entry});
+            _.each(this.preloadQueue, function (entry) {
+                if (entry[0] === '2D') {
+                    self.factory.loadTemplates2D(entry[1], entry[2], entry[3], function () {
+                        console.log('loadTemplates2D callback', entry);
+                        amplify.publish('preloadContext', {entry: entry});
                     });
                 }
 
@@ -127,26 +124,26 @@ View = (function(){
             //TODO preload sounds !!!
         },
 
-        createContext2D: function( key, DOMAnchorId, renderingType, manifest, atlasPath, width, height ){
+        createContext2D: function (key, DOMAnchorId, renderingType, manifest, atlasPath, width, height) {
 
-            var ctx2D =  new Context2D( DOMAnchorId, renderingType, width || this.width, height || this.height );
-            this.bindContextToFactory( ctx2D, key );
+            var ctx2D = new Context2D(DOMAnchorId, renderingType, width || this.width, height || this.height);
+            this.bindContextToFactory(ctx2D, key);
 
             // create preload queue entry
             //this.factory.loadTemplates2D( key, atlasPath, JSON.parse(Assets.getText(manifest)) );
-            this.preloadQueue.push( ['2D', key, atlasPath, manifest] );
+            this.preloadQueue.push(['2D', key, atlasPath, manifest]);
         },
 
-        createContext3D: function( key, DOMAnchorId, manifest ){
+        createContext3D: function (key, DOMAnchorId, manifest) {
 
-            var ctx3D = new Context3D( DOMAnchorId, this.width, this.height );
-            this.bindContextToFactory( ctx3D, key );
-            this.factory.loadTemplates3D( manifest, key );
+            var ctx3D = new Context3D(DOMAnchorId, this.width, this.height);
+            this.bindContextToFactory(ctx3D, key);
+            this.factory.loadTemplates3D(manifest, key);
 
             // TODO notify templates loaded !!!
         },
 
-        bindContextToFactory: function( ctx, key ) {
+        bindContextToFactory: function (ctx, key) {
 
             ctx.init();
             this.contexts[key] = ctx;

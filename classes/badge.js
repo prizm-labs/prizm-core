@@ -1,15 +1,15 @@
-    Badge = function( id, entity, badgeType ) {
-        
-        var card = new Card(id,entity,"badge");
+Badge = function (id, entity, badgeType) {
 
-        card.inventoryKey = badgeType;
-        card.addSubclass(badgeType);
-        card.entity.setType(badgeType);
+    var card = new Card(id, entity, "badge");
 
-        //OVERRIDE Card methods
-        card.reveal = function(){
-            console.log('badge reveal');
-        }
+    card.inventoryKey = badgeType;
+    card.addSubclass(badgeType);
+    card.entity.setType(badgeType);
 
-        return card;
+    //OVERRIDE Card methods
+    card.reveal = function () {
+        console.log('badge reveal');
     }
+
+    return card;
+}

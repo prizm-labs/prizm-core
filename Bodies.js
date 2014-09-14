@@ -2,80 +2,116 @@
  * Created by michaelgarrido on 8/26/14.
  */
 
-Body2D = (function() {
+Body2D = (function () {
 
     function Body2D(ctx, x, y, key, options) {
 
         var body = {
 
             _dep: new Deps.Dependency,
-            id: null,
+            _entity: null,
+
+            key: key,
             x: x,
             y: y,
+            alpha: 1,
             rotation: 0,
             scale: 1,
 
+            hasFrames: options ? (options.frames || false) : false,
             ctx: ctx,
 
             animations: [],
+            onComplete: null,
 
             children: [],
 
-            place: function (x, y, duration) {
+            setFrame: function( index ){
+                this._entity.gotoAndStop( index );
+            },
+
+            place: function (x, y, duration, callback) {
 
                 //console.log(x!=null,y!=null);
 
-                this.x = x!=null ? x : this.x;
-                this.y = y!=null ? y : this.y;
+                this.x = x != null ? x : this.x;
+                this.y = y != null ? y : this.y;
 
 
-
-                this.registerAnimation( 'position', {
+                this.registerAnimation('position', {
                     x: this.x, y: this.y
                 }, duration || 0);
 
                 //this._dep.changed();
-                this.runAnimations();
+                this.runAnimations(callback);
             },
 
-            registerAnimation: function( attributeKey, attributeValues, duration){
-                this.animations.push( [attributeKey, attributeValues, duration] );
-                console.log('registerAnimation',this.animations);
+            fade: function( alpha, duration, callback ){
+
+                this._entity.visible = true;
+
+                this.alpha = alpha;
+                this.registerAnimation('alpha', alpha,
+                        duration || 0);
+
+                this.runAnimations(callback);
             },
 
-            runAnimations: function(){
+            rotate: function (rotation, duration, callback) {
+                this.rotation = rotation;
+
+                this.registerAnimation('rotation', rotation,
+                        duration || 0);
+
+                this.runAnimations(callback);
+            },
+
+            setPivot: function( x, y ) {
+                this.entity().pivot.x = x;
+                this.entity().pivot.y = y;
+            },
+
+            registerAnimation: function (attributeKey, attributeValues, duration) {
+                this.animations.push([attributeKey, attributeValues, duration]);
+                console.log('registerAnimation', this.animations);
+            },
+
+            runAnimations: function ( callback ) {
+                this.onComplete = callback || null;
                 this._dep.changed();
             },
 
-            update: function(){
+            update: function () {
                 this._dep.depend();
-                this.ctx.updateBody( this );
+                var timeline = this.ctx.updateBody(this);
+
+                if (timeline) timeline.play();
             },
 
-            entity: function(){
+            entity: function () {
                 return this.ctx.getEntity(this.id);
             },
 
-            addChild: function( body2D ){
+            addChild: function (body2D) {
                 this.children.push(body2D);
-                this.ctx.addChildToGroup( this.id, body2D.entity() );
+                this.ctx.addChildToGroup(this.id, body2D.entity());
             }
-
-//            position: function () {
-//                console.log(this.x + ',' + this.y);
-//                return [this.x, this.y];
-//            },
 
         };
 
-        if (key==='group'){
-            body.id = ctx.addGroup(body.x, body.y);
+        var entity;
+
+        if (key === 'group') {
+            entity = ctx.addGroup(body.x, body.y);
         } else {
-            body.id = ctx.addBody(body.x, body.y, key, options);
+            entity = ctx.addBody(body.x, body.y, key, options);
         }
 
+        body._entity = entity.body;
+        body.id = entity.id;
 
-        Deps.autorun(function(c){
+
+        Deps.autorun(function (c) {
             body.update();
         });
 
@@ -86,7 +122,7 @@ Body2D = (function() {
 })();
 
 
-Body3D = (function() {
+Body3D = (function () {
 
     function Body3D(ctx, key, x, y, z, options) {
 
@@ -109,9 +145,9 @@ Body3D = (function() {
                     x: x, y: y, z: z
                 };
 
-                this.registerAnimation( 'position', {
+                this.registerAnimation('position', {
                     x: x, y: y, z: z
-                }, duration || 0 );
+                }, duration || 0);
 
                 this.runAnimations();
             },
@@ -121,23 +157,23 @@ Body3D = (function() {
                     x: x, y: y, z: z
                 };
 
-                this.registerAnimation( 'rotation', {
+                this.registerAnimation('rotation', {
                     x: x, y: y, z: z
-                }, duration || 0 );
+                }, duration || 0);
                 this.runAnimations();
             },
 
-            update: function() {
+            update: function () {
                 this._dep.depend();
-                this.ctx.updateBody( this );
+                this.ctx.updateBody(this);
             },
 
-            registerAnimation: function( attributeKey, attributeValues, duration){
-                this.animations.push( [attributeKey, attributeValues, duration] );
-                console.log('registerAnimation',this.animations);
+            registerAnimation: function (attributeKey, attributeValues, duration) {
+                this.animations.push([attributeKey, attributeValues, duration]);
+                console.log('registerAnimation', this.animations);
             },
 
-            runAnimations: function(){
+            runAnimations: function () {
                 this._dep.changed();
             }
 

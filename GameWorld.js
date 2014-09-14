@@ -2,9 +2,9 @@
  * Created by michaelgarrido on 9/9/14.
  */
 
-GameWorld = (function(){
+GameWorld = (function () {
 
-    function GameWorld(){
+    function GameWorld() {
         this.preloaded = false;
         this.rendered = false;
         this.view = null;
@@ -15,7 +15,7 @@ GameWorld = (function(){
 
     GameWorld.prototype = {
 
-        prepare: function( contexts ){
+        prepare: function (contexts) {
 
             var self = this;
             console.log('prepareGameWorld', contexts);
@@ -23,18 +23,18 @@ GameWorld = (function(){
 
             // setup pubsub to track each context loading
             // when all contexts loaded, notify server
-            amplify.subscribe('preloadView',function( data ){
+            amplify.subscribe('preloadView', function (data) {
                 self.preloaded = true;
 
-                Meteor.call('clientReadyForGameSession',Session.get('client_id'),Session.get('arena')._id)
+                Meteor.call('clientReadyForGameSession', Session.get('client_id'), Session.get('arena')._id)
             });
 
-            this.view = new View( 'main', Session.get('viewport_width'), Session.get('viewport_height') );
-            this.view.createUIManager( 'hit-area' );
+            this.view = new View('main', Session.get('viewport_width'), Session.get('viewport_height'));
+            this.view.createUIManager('hit-area');
 
-            _.each( contexts, function( context, key ){
-                if (context.type=='2D') {
-                    self.view.createContext2D( key, context.domAnchor, 'canvas',
+            _.each(contexts, function (context, key) {
+                if (context.type == '2D') {
+                    self.view.createContext2D(key, context.domAnchor, 'canvas',
                         context.manifest, context.atlas.map,
                         Session.get('viewport_width'), Session.get('viewport_height')
                     );
@@ -45,15 +45,15 @@ GameWorld = (function(){
 
         },
 
-        methods: function( methods ){
+        methods: function (methods) {
             _.extend(this._methods, methods);
         },
 
-        call: function( key, args ){
+        call: function (key, args) {
             if (this._methods[key]) this._methods[key].call(this, args);
         },
 
-        bindUI: function(){
+        bindUI: function () {
 
 //        b1 = this.factory.makeBody2D( 'hand', 'terrain', { x:100, y:100}, { variant: 'pasture' } );
 //        b2 = this.factory.makeBody3D( 'field', 'road', 0,0,0);
@@ -68,27 +68,27 @@ GameWorld = (function(){
 
             // Render private view bodies (i.e. hand)
 
-            boxTgt = this.view.UI.addBoxTarget(0,0,screenSize[0], screenSize[1],'hand');
-            boxTgt.setBehavior( 'tap', null, null, function( event ){
-                console.log('box tap stop',event);
+            boxTgt = this.view.UI.addBoxTarget(0, 0, screenSize[0], screenSize[1], 'hand');
+            boxTgt.setBehavior('tap', null, null, function (event) {
+                console.log('box tap stop', event);
             });
-            boxTgt.setBehavior( 'pan',
-                function( event ){
-                    console.log('box pan start',event);
+            boxTgt.setBehavior('pan',
+                function (event) {
+                    console.log('box pan start', event);
                 },
-                function( event ){
-                    console.log('box pan update',event);
+                function (event) {
+                    console.log('box pan update', event);
                     //b1.place( b1.x+event.deltaX, b1.y+event.deltaY );
                     //b1.place( event.center.x, event.center.y, 0 );
-                    Meteor.call('updateNode',"qwiyKk5SFwZG9E4ca",{x:event.center.x,y:event.center.y})
+                    Meteor.call('updateNode', "qwiyKk5SFwZG9E4ca", {x: event.center.x, y: event.center.y})
                 },
-                function( event ){
-                    console.log('box pan stop',event);
+                function (event) {
+                    console.log('box pan stop', event);
                 });
             boxTgt.activate();
 
 
-            this.view.UI.setTargetGroup('fullscreen',[boxTgt]);
+            this.view.UI.setTargetGroup('fullscreen', [boxTgt]);
 
 
             this.view.present();

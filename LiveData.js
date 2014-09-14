@@ -1,9 +1,9 @@
 /**
  * Created by michaelgarrido on 9/2/14.
  */
-LiveDataDelegate = function(){
+LiveDataDelegate = function () {
 
-    function LiveDataDelegate(){
+    function LiveDataDelegate() {
 
         // bind collection (or document) to reactive object
         //i.e. Node document on server to Body2D on client
@@ -15,13 +15,13 @@ LiveDataDelegate = function(){
 
     LiveDataDelegate.prototype = {
 
-        registerSubscription: function( collection, id, translation ){
+        registerSubscription: function (collection, id, translation) {
 
-            this.subscriptions[collection+id] = translation;
+            this.subscriptions[collection + id] = translation;
 
         },
 
-        updateSubscriptions: function( ddpMsg ){
+        updateSubscriptions: function (ddpMsg) {
 
             //console.log('updateSubscriptions',ddpMsg);
             //if id matches subscription, call translation
@@ -30,7 +30,7 @@ LiveDataDelegate = function(){
             // "id":"qwiyKk5SFwZG9E4ca",
             // "fields":{"x":200,"y":200}}
 
-            if (this.subscriptions[ddpMsg.collection+ddpMsg.id]) this.subscriptions[ddpMsg.collection+ddpMsg.id](ddpMsg.fields);
+            if (this.subscriptions[ddpMsg.collection + ddpMsg.id]) this.subscriptions[ddpMsg.collection + ddpMsg.id](ddpMsg.fields);
 
         }
 

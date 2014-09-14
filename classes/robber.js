@@ -1,31 +1,31 @@
-    Robber = function( id, entity ) {
-        
-        var piece = new Piece("robber",id,entity);
+Robber = function (id, entity) {
 
-        var _terrain = null;
+    var piece = new Piece("robber", id, entity);
 
-        piece.clear = function(){
-            if (_terrain!==null){
-                _terrain.unblock();
-                _terrain = null;
-            }
+    var _terrain = null;
+
+    piece.clear = function () {
+        if (_terrain !== null) {
+            _terrain.unblock();
+            _terrain = null;
         }
+    }
 
-        piece.setTerrain = function( terrain ){
-            var origin = terrain.getOrigin();
+    piece.setTerrain = function (terrain) {
+        var origin = terrain.getOrigin();
 
-            piece.clear();
+        piece.clear();
 
-            //piece.entity.pos.x = origin.x;
-            //piece.entity.pos.y = origin.y;
+        //piece.entity.pos.x = origin.x;
+        //piece.entity.pos.y = origin.y;
 
-            _terrain = terrain;
-            _terrain.block();
+        _terrain = terrain;
+        _terrain.block();
 
-            //console.log(_terrain.isBlocked());
-            //alert('blocking terrain');
-        }
+        //console.log(_terrain.isBlocked());
+        //alert('blocking terrain');
+    }
 
 
-        return piece;
-    };
+    return piece;
+};

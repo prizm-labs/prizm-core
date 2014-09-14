@@ -1,12 +1,12 @@
-    ResourceCard = function( id, entity, resourceType ) {
-        
-        var card = new Card(id,entity,"resource");
+ResourceCard = function (id, entity, resourceType) {
 
-        card.resourceType = resourceType;
-        card.inventoryKey = resourceType;
-        card.addSubclass(resourceType);
+    var card = new Card(id, entity, "resource");
 
-        //card.entity.setType(resourceType);
+    card.resourceType = resourceType;
+    card.inventoryKey = resourceType;
+    card.addSubclass(resourceType);
 
-        return card;
-    };
+    //card.entity.setType(resourceType);
+
+    return card;
+};

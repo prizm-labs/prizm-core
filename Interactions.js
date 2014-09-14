@@ -1,11 +1,10 @@
 /**
  * Created by michaelgarrido on 8/28/14.
  */
-UIManager = (function(){
+UIManager = (function () {
 
 
-
-    function UIManager( factory, DOMAnchorId ){
+    function UIManager(factory, DOMAnchorId) {
 
         var _this = this;
 
@@ -22,9 +21,9 @@ UIManager = (function(){
         this.targetGroups = {};
 
         this.factory = factory; // Pixi 2D context
-        this.DOMAnchor = document.getElementById( DOMAnchorId );
+        this.DOMAnchor = document.getElementById(DOMAnchorId);
 
-        console.log('Hammer DOMAnchor',this.DOMAnchor);
+        console.log('Hammer DOMAnchor', this.DOMAnchor);
 
         var screen = document.querySelector(".device-screen");
         var el = this.DOMAnchor;
@@ -54,17 +53,17 @@ UIManager = (function(){
         mc.on("tap", this.onTap.bind(this));
         mc.on("doubletap", this.onDoubleTap.bind(this));
 
-        mc.on("hammer.input", function( event ) {
-            console.log('hammer input',event);
+        mc.on("hammer.input", function (event) {
+            console.log('hammer input', event);
 
             // Set active target?
 
             if (_this.activeTarget == null) {
 
-                var activeTarget = _this.checkForActivePoint( event.center.x, event.center.y );
+                var activeTarget = _this.checkForActivePoint(event.center.x, event.center.y);
 
                 if (activeTarget) _this.activeTarget = activeTarget;
-                console.log('activeTarget',_this.activeTarget);
+                console.log('activeTarget', _this.activeTarget);
             }
 
 //            if (ev.isFinal) {
@@ -79,10 +78,10 @@ UIManager = (function(){
 
     UIManager.prototype = {
 
-        onPan: function ( event ){
+        onPan: function (event) {
             var phase;
 
-            switch( event.type ) {
+            switch (event.type) {
                 case 'panstart':
                     phase = 'start';
                     break;
@@ -94,55 +93,55 @@ UIManager = (function(){
                     break;
             }
 
-            this.onEvent( 'pan', phase, event );
+            this.onEvent('pan', phase, event);
         },
 
-        onRotate: function ( event ){
-
-        },
-
-        onPinch: function ( event ){
+        onRotate: function (event) {
 
         },
 
-        onSwipe: function ( event ){
+        onPinch: function (event) {
 
         },
 
-        onTap: function ( event ){
+        onSwipe: function (event) {
+
+        },
+
+        onTap: function (event) {
             var phase;
 
-            switch( event.type ) {
+            switch (event.type) {
                 case 'tap':
                     phase = 'stop';
                     break;
 
             }
 
-            this.onEvent( 'tap', phase, event );
+            this.onEvent('tap', phase, event);
         },
 
-        onDoubleTap: function ( event ){
+        onDoubleTap: function (event) {
 
         },
 
-        onEvent: function( eventType, phase, event ){
+        onEvent: function (eventType, phase, event) {
 
-            if (this.activeTarget!=null) {
+            if (this.activeTarget != null) {
 
                 var behavior = this.activeTarget.behaviors[eventType] || null;
 
-                if (behavior!=null) {
+                if (behavior != null) {
 
-                    switch( phase ){
+                    switch (phase) {
                         case 'start':
-                            if (behavior.onStart!=null) this.activeTarget.behaviors[eventType].onStart( event );
+                            if (behavior.onStart != null) this.activeTarget.behaviors[eventType].onStart(event);
                             break;
                         case 'update':
-                            if (behavior.onUpdate!=null) this.activeTarget.behaviors[eventType].onUpdate( event );
+                            if (behavior.onUpdate != null) this.activeTarget.behaviors[eventType].onUpdate(event);
                             break;
                         case 'stop':
-                            if (behavior.onStop!=null) this.activeTarget.behaviors[eventType].onStop( event );
+                            if (behavior.onStop != null) this.activeTarget.behaviors[eventType].onStop(event);
                             this.activeTarget = null;
                             break;
                     }
@@ -152,20 +151,21 @@ UIManager = (function(){
     };
 
 
-    UIManager.prototype.checkForActivePoint = function( x, y ){
+    UIManager.prototype.checkForActivePoint = function (x, y) {
 
 
         var activeTarget = null;
 
-        _.each( this.targets.active, function( target ){
-            if (target.containsPoint( x, y )) activeTarget = target; return;
+        _.each(this.targets.active, function (target) {
+            if (target.containsPoint(x, y)) activeTarget = target;
+            return;
         });
 
         return activeTarget;
     };
 
 
-    UIManager.prototype.bindStageTarget = function( ctxKey ){
+    UIManager.prototype.bindStageTarget = function (ctxKey) {
 
         var stage = this.factory.contexts[ctxKey].stage;
         //this.addTarget( ctxKey, 'stage', stage );
@@ -185,9 +185,9 @@ UIManager = (function(){
 
     // Move or scale hit area
 
-    UIManager.prototype.addBoxTarget = function( x, y, width, height, ctxKey, groupKey ){
+    UIManager.prototype.addBoxTarget = function (x, y, width, height, ctxKey, groupKey) {
 
-        var newTarget = new BoxTarget( x, y, width, height, this.factory.contexts[ctxKey], this );
+        var newTarget = new BoxTarget(x, y, width, height, this.factory.contexts[ctxKey], this);
 
         this.targets.all.push(newTarget);
 
@@ -195,25 +195,24 @@ UIManager = (function(){
     };
 
 
-
-    UIManager.prototype.setTargetGroup = function( groupKey, targets ) {
+    UIManager.prototype.setTargetGroup = function (groupKey, targets) {
         var _this = this;
-        if (typeof this.targetGroups[groupKey]=="undefined") this.targetGroups[groupKey] = [];
-        _.each( targets, function( target ){
+        if (typeof this.targetGroups[groupKey] == "undefined") this.targetGroups[groupKey] = [];
+        _.each(targets, function (target) {
             _this.targetGroups[groupKey].push(target);
         });
 
     }
 
 
-    UIManager.prototype.checkEventOrigin = function(){
+    UIManager.prototype.checkEventOrigin = function () {
 
         // Is point contained by an active target?
 
     }
 
 
-    UIManager.prototype.addRelativeTarget = function( ctxKey, targetKey, target ){
+    UIManager.prototype.addRelativeTarget = function (ctxKey, targetKey, target) {
 
         // Map hit area for bound target
 
@@ -223,7 +222,7 @@ UIManager = (function(){
 
     };
 
-    UIManager.prototype.addFixedTarget = function( ctxKey, targetKey, target ){
+    UIManager.prototype.addFixedTarget = function (ctxKey, targetKey, target) {
 
 
     };
@@ -231,7 +230,7 @@ UIManager = (function(){
     return UIManager;
 })();
 
-function BoxTarget( x, y, width, height, context2D, manager ){
+function BoxTarget(x, y, width, height, context2D, manager) {
 
     //console.log('BoxTarget',context2D);
     this.manager = manager;
@@ -259,40 +258,40 @@ function BoxTarget( x, y, width, height, context2D, manager ){
     // generate corners to evaluate contained point
     this.corners = [];
 
-    this.corners.push( [x,y], [x+width, y], [x, y+height], [x+width, y+height] );
+    this.corners.push([x, y], [x + width, y], [x, y + height], [x + width, y + height]);
 }
 
 BoxTarget.prototype = {
 
-    containsPoint: function( x, y ) {
+    containsPoint: function (x, y) {
         return !(x < this.corners[0][0] || x > this.corners[3][0]
             || y < this.corners[0][1] || y > this.corners[3][1] );
     },
 
-    activate: function(){
-        this.graphics = this.context.addRectangle( this.x, this.y, this.width, this.height );
+    activate: function () {
+        this.graphics = this.context.addRectangle(this.x, this.y, this.width, this.height);
         this.active = true;
 
         this.manager.targets.active.push(this);
     },
 
-    deactivate: function(){
-        this.context.removeBody( this.graphics );
+    deactivate: function () {
+        this.context.removeBody(this.graphics);
         this.active = false;
 
         this.manager.targets.active = _.without(this.manager.targets.active, this);
-        console.log('targets after deactivation',this.manager.targets.active);
+        console.log('targets after deactivation', this.manager.targets.active);
     },
 
-    setBehavior: function( eventType, onStart, onUpdate, onStop ){
+    setBehavior: function (eventType, onStart, onUpdate, onStop) {
 
-        this.behaviors[eventType] = new Behavior( onStart, onUpdate, onStop );
+        this.behaviors[eventType] = new Behavior(onStart, onUpdate, onStop);
 
     }
 };
 
 
-function Behavior( onStart, onUpdate, onStop ){
+function Behavior(onStart, onUpdate, onStop) {
 
     this.onStart = onStart;
     this.onUpdate = onUpdate;
@@ -304,7 +303,7 @@ Behavior.prototype = {
 };
 
 
-function EventTargetGroup( key, targets ){
+function EventTargetGroup(key, targets) {
 
     this.targets = targets;
     this.active = false;

@@ -1,7 +1,7 @@
-Location = (function(x,y,type,id,entity) {
+Location = (function (x, y, type, id, entity) {
     var self = this;
 
-    function Location(){
+    function Location() {
         //this.id
         //this.type
         this.position = null;
@@ -9,22 +9,22 @@ Location = (function(x,y,type,id,entity) {
         this.neighbors = [];
     }
 
-    Location.prototype.addPiece = function(piece){
+    Location.prototype.addPiece = function (piece) {
         this.pieces.push(piece);
         //piece.setLocation(self);
     }
 
-    Location.prototype.addNeighbor = function(neighbor){
+    Location.prototype.addNeighbor = function (neighbor) {
         //TODO
         //if neighbots.length<=3
         //if neightbor unique
         this.neighbors.push(neighbor);
     }
 
-        var _id = id;
+    var _id = id;
     var _owners = []; //Terrain
     var _type = type;
-    var _position = {x:x,y:y};
+    var _position = {x: x, y: y};
     var _neighbors = []; //PieceLocation
     var _pieces = []; //Piece
     var _entity = entity;

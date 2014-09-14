@@ -13,7 +13,7 @@ function stateError(eventName, from, to, args, errorCode, errorMessage) {
 
 currentState = null;
 
-function Phase(){
+function Phase() {
 
     this.stateMachine = StateMachine.create({
         initial: 'Lobby',
@@ -21,27 +21,26 @@ function Phase(){
             { name: 'EnterSetup', from: 'Lobby', to: 'GameSetup' },
             { name: 'EnterMain', from: 'GameSetup', to: 'GameMain' },
             { name: 'EnterEnd', from: 'GameMain', to: 'GameEnd' },
-            { name: 'LeaveGame', from: ['GameSetup','GameMain'], to: 'Lobby' }
+            { name: 'LeaveGame', from: ['GameSetup', 'GameMain'], to: 'Lobby' }
         ],
         callbacks: {
-            onbeforevent: function( event, from, to, options ){
+            onbeforevent: function (event, from, to, options) {
 
             },
-            onleavestate: function( event, from, to, options ){
+            onleavestate: function (event, from, to, options) {
 
             },
-            onenterstate: function( event, from, to, options ){
+            onenterstate: function (event, from, to, options) {
 
             },
-            onafterevent: function( event, from, to, options ){
+            onafterevent: function (event, from, to, options) {
 
             }
         },
         error: stateError
     });
 
-    this.stateMachine.onEnterMain = function( event, from, to, options ){
-
+    this.stateMachine.onEnterMain = function (event, from, to, options) {
 
 
     };
@@ -62,7 +61,7 @@ function Phase(){
  * */
 // fsm.current
 
-function ActionPhase(){
+function ActionPhase() {
 
     this.stateMachine = PRIZM.StateMachine.create({
         initial: 'Lobby',
@@ -70,19 +69,19 @@ function ActionPhase(){
             { name: 'EnterSetup', from: 'Lobby', to: 'GameSetup' },
             { name: 'EnterMain', from: 'GameSetup', to: 'GameMain' },
             { name: 'EnterEnd', from: 'GameMain', to: 'GameEnd' },
-            { name: 'LeaveGame', from: ['GameSetup','GameMain'], to: 'Lobby' }
+            { name: 'LeaveGame', from: ['GameSetup', 'GameMain'], to: 'Lobby' }
         ],
         callbacks: {
-            onbeforevent: function(){
+            onbeforevent: function () {
 
             },
-            onleavestate: function(){
+            onleavestate: function () {
 
             },
-            onenterstate: function(){
+            onenterstate: function () {
 
             },
-            onafterevent: function(){
+            onafterevent: function () {
 
             }
         },
@@ -92,7 +91,7 @@ function ActionPhase(){
 }
 
 
-function TurnQueue(){
+function TurnQueue() {
 
     this.history = [];
 
@@ -105,8 +104,7 @@ TurnQueue.prototype = {
     //cyclical
     //custom
 
-    setProgression: function(){
-
+    setProgression: function () {
 
 
     }
@@ -114,12 +112,7 @@ TurnQueue.prototype = {
 };
 
 
-function PhaseMaster(){
-
-
-
-
-
+function PhaseMaster() {
 
 
 }
@@ -127,17 +120,17 @@ function PhaseMaster(){
 PhaseMaster.prototype = {
 
     // get deepest state in state machine
-    currentState: function(){
+    currentState: function () {
 
         return null;
     },
 
-    registerViewsForEvent: function(){
+    registerViewsForEvent: function () {
 
     },
 
     // update UI & bind interactions accordingly
-    setupViewsForEvent: function(){
+    setupViewsForEvent: function () {
 
     }
 

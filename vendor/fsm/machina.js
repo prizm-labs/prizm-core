@@ -19,7 +19,7 @@ machina = (function (root, factory) {
     //     root.machina = factory(root._, root);
     // }
 
-    return factory( lodash );
+    return factory(lodash);
 
 }(this, function (_, global, undefined) {
     var slice = [].slice;
@@ -59,19 +59,19 @@ machina = (function (root, factory) {
 
     if (!_.deepExtend) {
         var behavior = {
-            "*": function (obj, sourcePropKey, sourcePropVal) {
-                obj[sourcePropKey] = sourcePropVal;
+                "*": function (obj, sourcePropKey, sourcePropVal) {
+                    obj[sourcePropKey] = sourcePropVal;
+                },
+                "object": function (obj, sourcePropKey, sourcePropVal) {
+                    obj[sourcePropKey] = deepExtend({}, obj[sourcePropKey] || {}, sourcePropVal);
+                },
+                "array": function (obj, sourcePropKey, sourcePropVal) {
+                    obj[sourcePropKey] = [];
+                    _.each(sourcePropVal, function (item, idx) {
+                        behavior[getHandlerName(item)](obj[sourcePropKey], idx, item);
+                    }, this);
+                }
             },
-            "object": function (obj, sourcePropKey, sourcePropVal) {
-                obj[sourcePropKey] = deepExtend({}, obj[sourcePropKey] || {}, sourcePropVal);
-            },
-            "array": function (obj, sourcePropKey, sourcePropVal) {
-                obj[sourcePropKey] = [];
-                _.each(sourcePropVal, function (item, idx) {
-                    behavior[getHandlerName(item)](obj[sourcePropKey], idx, item);
-                }, this);
-            }
-        },
             getActualType = function (val) {
                 if (_.isArray(val)) {
                     return "array";
@@ -112,7 +112,8 @@ machina = (function (root, factory) {
     };
 
     _.extend(Fsm.prototype, {
-        initialize: function () {},
+        initialize: function () {
+        },
         emit: function (eventName) {
             var args = arguments;
             if (this.eventListeners["*"]) {
@@ -211,9 +212,9 @@ machina = (function (root, factory) {
         },
         processQueue: function (type) {
             var filterFn = type === NEXT_TRANSITION ?
-            function (item) {
-                return item.type === NEXT_TRANSITION && ((!item.untilState) || (item.untilState === this.state));
-            } : function (item) {
+                function (item) {
+                    return item.type === NEXT_TRANSITION && ((!item.untilState) || (item.untilState === this.state));
+                } : function (item) {
                 return item.type === NEXT_HANDLER;
             };
             var toProcess = _.filter(this.eventQueue, filterFn, this);
@@ -304,7 +305,8 @@ machina = (function (root, factory) {
     var inherits = function (parent, protoProps, staticProps) {
         var fsm; // placeholder for instance constructor
         var machObj = {}; // object used to hold initialState & states from prototype for instance-level merging
-        var ctor = function () {}; // placeholder ctor function used to insert level in prototype chain
+        var ctor = function () {
+        }; // placeholder ctor function used to insert level in prototype chain
         // The constructor function for the new subclass is either defined by you
         // (the "constructor" property in your `extend` definition), or defaulted
         // by us to simply call the parent's constructor.

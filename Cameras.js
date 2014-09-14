@@ -1,9 +1,9 @@
 /**
  * Created by michaelgarrido on 8/31/14.
  */
-CameraManager = (function(){
+CameraManager = (function () {
 
-    function CameraManager( camera ){
+    function CameraManager(camera) {
 
         this.camera = camera;
         this.views = {};

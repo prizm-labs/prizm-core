@@ -1,98 +1,95 @@
-
-
-
-function PhaseManager(){
-  this.root = null;
-  this.activePhase = null;
+function PhaseManager() {
+    this.root = null;
+    this.activePhase = null;
 }
 
-function Phase( key ){
-  this.key = key; // internal reference
-  this.title = title; // displayed to players
+function Phase(key) {
+    this.key = key; // internal reference
+    this.title = title; // displayed to players
 
-  this.children = [];
-  this.parents = [];
+    this.children = [];
+    this.parents = [];
 
-  this.views = [];
+    this.views = [];
 }
 
 
 Phase.prototype = {
-  enter: function(){
-    // create / enable views 
-  },
+    enter: function () {
+        // create / enable views
+    },
 
-  checkForExit: function(){
+    checkForExit: function () {
 
-  },
+    },
 
-  exit: function(){
+    exit: function () {
 
-    
-  }
+
+    }
 }
 
 // global views, accessible anytime, like looking at your hand or inspecting the board
 
 // contextual views, like when it's your turn to act
 
-function Action(){
-  // prompt
-  // target(s)
-  // resolution
+function Action() {
+    // prompt
+    // target(s)
+    // resolution
 
-  // draw a card
-  // roll dice
+    // draw a card
+    // roll dice
 
 }
 
 Action.prototype = {
 
-  enter: function(){
+    enter: function () {
 
-    // show available target(s)
+        // show available target(s)
 
-  },
+    },
 
-  setTargets: function( targets ){
+    setTargets: function (targets) {
 
-    // show selected target(s)
+        // show selected target(s)
 
-  },
+    },
 
-  clearTargets: function( ){
+    clearTargets: function () {
 
-    // return to target selection
+        // return to target selection
 
-  },
+    },
 
-  confirm: function(){
+    confirm: function () {
 
-    // commit action on targets
+        // commit action on targets
 
-  }
+    }
 
 }
 
-function View(){
-  // What UI should be shown/enabled for user to perfrom given action?
+function View() {
+    // What UI should be shown/enabled for user to perfrom given action?
 
-  // eventTarget groups
-  // behaviors 
-  // bodies
+    // eventTarget groups
+    // behaviors
+    // bodies
 
-  // UIElements
+    // UIElements
 
-  // camera perspectives
+    // camera perspectives
 }
 
-function Progression(){
-  //cyclical
-  //linear
+function Progression() {
+    //cyclical
+    //linear
 
-  this.history = [];
+    this.history = [];
 
-  this.iterator = null; // a sequence of actions
+    this.iterator = null; // a sequence of actions
 }
 
 // enter, setup 
@@ -101,14 +98,13 @@ function Progression(){
 // exit, condition
 
 // setup phase
-  //
+//
 
 // StateMachine = function(){}
 
 
-
 // Engine = function(){
-  
+
 // }
 
 // // Preloader
@@ -126,7 +122,6 @@ function Progression(){
 //   this.siblings;
 //   thia.children;
 // }
-
 
 
 // Cyclical;
