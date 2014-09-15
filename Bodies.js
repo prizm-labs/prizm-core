@@ -25,9 +25,18 @@ Body2D = (function () {
             onComplete: null,
 
             children: [],
+            tags: [],
 
             setFrame: function( index ){
                 this._entity.gotoAndStop( index );
+            },
+
+            addTag: function( tag ){
+                  this.tags.push(tag);
+            },
+
+            hasTag: function( tag ){
+                return this.tags.indexOf(tag)!=-1;
             },
 
             place: function (x, y, duration, callback) {

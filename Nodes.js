@@ -96,12 +96,28 @@ Node = (function () {
         call: function (key, args) {
             if (this._methods[key]) this._methods[key].call(this, args);
         },
+        apply: function (key, args) {
+            if (this._methods[key]) this._methods[key].apply(this, args);
+        },
         setBody: function (key, body) {
             this.bodies[key] = body;
         },
         removeBody: function (key) {
-            this.bodies[key].remove();
-            delete this.bodies[key];
+            var self = this;
+            var match = this.bodies[key];
+
+            // Find all references to body
+            var keys = [];
+            _.each(this.bodies, function(body,key){
+                if (body==match) keys.push(key);
+            });
+
+            match.remove();
+
+            _.each(keys,function(key){
+                delete self.bodies[key];
+            });
+
         },
 
         body: function (key) {
@@ -113,10 +129,18 @@ Node = (function () {
         location: function (key) {
             return this.locations[key];
         },
-        locationToPoint: function(key){
+        locationToPoint: function (key) {
             return Layout.arrayToPoint(this.locations[key]);
+        },
+        bodiesWithTag: function (tag) {
+            var result = [];
+            _.each( this.bodies, function(body) {
+                if (body.hasTag(tag)) result.push(body);
+            });
+
+            return result;
         }
-    }
+    };
     //});
 
 
