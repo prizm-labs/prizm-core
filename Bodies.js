@@ -92,7 +92,8 @@ Body2D = (function () {
 
             update: function () {
                 this._dep.depend();
-                var timeline = this.ctx.updateBody(this);
+                var timeline = this.ctx.updateBody(this, this.onComplete);
+                this.onComplete = null;
 
                 if (timeline) timeline.play();
             },

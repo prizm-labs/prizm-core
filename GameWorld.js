@@ -10,6 +10,10 @@ GameWorld = (function () {
         this.view = null;
 
         this._methods = {};
+
+        this.nodes = [];
+
+        this.state = {};
     }
 
 
@@ -45,12 +49,29 @@ GameWorld = (function () {
 
         },
 
+        broadcast: function( channel, data ){
+
+
+        },
+
         methods: function (methods) {
             _.extend(this._methods, methods);
         },
 
         call: function (key, args) {
-            if (this._methods[key]) this._methods[key].call(this, args);
+            if (this._methods[key]) return this._methods[key].call(this, args);
+        },
+
+        addNode: function (node) {
+            this.nodes.push(node);
+        },
+        nodesWithTag: function (tag) {
+            var result = [];
+            _.each( this.nodes, function(node) {
+                if (node.hasTag(tag)) result.push(node);
+            });
+
+            return result;
         },
 
         bindUI: function () {

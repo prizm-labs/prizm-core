@@ -36,5 +36,18 @@ Layout = {
             return {x:data[0],y:data[1]};
         else
             return data
+    },
+    randomPositionNear: function( origin, radius ){
+        origin = this.arrayToPoint(origin);
+
+        // Random angle
+        var angle = Math.PI*2*Math.random();
+        // Random distance from radius
+        var distance = radius*Math.random();
+
+        return {
+            x:origin.x+distance*Math.sin(angle),
+            y:origin.y+distance*Math.cos(angle)
+        }
     }
 }

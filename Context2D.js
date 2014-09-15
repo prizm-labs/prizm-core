@@ -280,16 +280,19 @@ Context2D.prototype = {
         return this.entities[id];
     },
 
-    updateBody: function (body) {
+    updateBody: function (body, callback) {
 
         var entity = this.entities[body.id];
 
         var timelineOptions = { paused:true };
-        if (body.onComplete!==null) {
-            timelineOptions.onComplete = function() {
-                body.onComplete();
-                body.onComplete = null;
-            };
+//        if (body.onComplete!==null) {
+//            timelineOptions.onComplete = function() {
+//                body.onComplete();
+//                body.onComplete = null;
+//            };
+//        }
+        if (callback) {
+            timelineOptions.onComplete = callback;
         }
 
 

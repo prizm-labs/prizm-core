@@ -16,6 +16,7 @@ PRIZM = {
     GameWorld: GameWorld,
     View: View,
     ViewManager: ViewManager,
+    Layout: Layout,
 
     UIManager: UIManager,
     SoundManager: SoundManager,

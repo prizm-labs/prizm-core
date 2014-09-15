@@ -79,6 +79,8 @@ Node = (function () {
         this.bodies = {}; // visual representations
         this.locations = {};
 
+        this.tags = [];
+
         this.world = null;
 
         //NodeMatrix.nodes.push(this);
@@ -94,11 +96,20 @@ Node = (function () {
         },
 
         call: function (key, args) {
-            if (this._methods[key]) this._methods[key].call(this, args);
+            if (this._methods[key]) return this._methods[key].call(this, args);
         },
         apply: function (key, args) {
-            if (this._methods[key]) this._methods[key].apply(this, args);
+            if (this._methods[key]) return this._methods[key].apply(this, args);
         },
+
+        addTag: function( tag ){
+            this.tags.push(tag);
+        },
+
+        hasTag: function( tag ){
+            return this.tags.indexOf(tag)!=-1;
+        },
+
         setBody: function (key, body) {
             this.bodies[key] = body;
         },
