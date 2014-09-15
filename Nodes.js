@@ -102,14 +102,40 @@ Node = (function () {
             if (this._methods[key]) return this._methods[key].apply(this, args);
         },
 
-        addTag: function( tag ){
+        addTag: function (tag) {
             this.tags.push(tag);
         },
-
-        hasTag: function( tag ){
-            return this.tags.indexOf(tag)!=-1;
+        addTags: function (tags) {
+            _.each(tags, this.addTag);
         },
 
+        hasTag: function (tag) {
+            return this.tags.indexOf(tag)!=-1;
+        },
+        hasTags: function (tags) {
+            var self = this;
+            var matches = _.filter(tags, function(tag){ return self.hasTag(tag); });
+            return matches.length===tags.length;
+        },
+
+        bodiesWithTag: function (tag) {
+            return _.filter( this.bodies, function(body) {
+                return body.hasTag(tag);
+            });
+        },
+        bodiesWithTags: function (tags) {
+            return _.filter( this.bodies, function(body) {
+                return body.hasTags(tags);
+            });
+        },
+
+        addBody: function(body){
+            // give body a unique id
+            var uuid = Meteor.uuid();
+            this.bodies[uuid] = body;
+
+            return uuid;
+        },
         setBody: function (key, body) {
             this.bodies[key] = body;
         },
@@ -143,13 +169,17 @@ Node = (function () {
         locationToPoint: function (key) {
             return Layout.arrayToPoint(this.locations[key]);
         },
-        bodiesWithTag: function (tag) {
-            var result = [];
-            _.each( this.bodies, function(body) {
-                if (body.hasTag(tag)) result.push(body);
-            });
 
-            return result;
+
+        bindUI: function(){
+
+            // hitarea, gesture, action
+
+        },
+
+        bindEvent: function(){
+
+            // channel, attribute, action
         }
     };
     //});

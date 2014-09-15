@@ -31,12 +31,33 @@ Body2D = (function () {
                 this._entity.gotoAndStop( index );
             },
 
+            getAbsoluteBounds: function( options, reference ){
+                // default reference assuming Stage is parent
+
+                var bounds = this._entity.getBounds();
+
+                var x = this._entity.position.x+bounds.x*this._entity.scale.x,
+                    y = this._entity.position.y+bounds.y*this._entity.scale.y,
+                    w = bounds.width*this._entity.scale.x,
+                    h = bounds.height*this._entity.scale.y;
+
+                return [x,y,w,h];
+            },
+
             addTag: function( tag ){
                   this.tags.push(tag);
+            },
+            addTags: function (tags) {
+                _.each(tags, this.addTag.bind(this));
             },
 
             hasTag: function( tag ){
                 return this.tags.indexOf(tag)!=-1;
+            },
+            hasTags: function (tags) {
+                var self = this;
+                var matches = _.filter(tags, function(tag){ return self.hasTag(tag); });
+                return matches.length===tags.length;
             },
 
             place: function (x, y, duration, callback) {
