@@ -95,6 +95,10 @@ Body2D = (function () {
             addChild: function (body2D) {
                 this.children.push(body2D);
                 this.ctx.addChildToGroup(this.id, body2D.entity());
+            },
+
+            remove: function(){
+                this.ctx.removeBody(this.id);
             }
 
         };

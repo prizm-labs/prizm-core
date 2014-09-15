@@ -164,6 +164,11 @@ Context2D.prototype = {
         //})
     },
 
+    removeBody: function (id) {
+        this.entities[id].parent.removeChild(this.entities[id]);
+        delete this.entities[id];
+    },
+
     addBody: function (x, y, key, options) {
         var self = this;
         var body;

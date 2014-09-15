@@ -46,11 +46,11 @@ NodeMatrix = {
 };
 
 /*
-* Node is a translation layer between rendered bodies and live data
-* (Mongo collections, streams, UI events)
-*
-* Register event listeners on nodes,
-* event (+ data) triggers manipulation of rendered bodies*/
+ * Node is a translation layer between rendered bodies and live data
+ * (Mongo collections, streams, UI events)
+ *
+ * Register event listeners on nodes,
+ * event (+ data) triggers manipulation of rendered bodies*/
 
 Node = (function () {
 
@@ -99,6 +99,11 @@ Node = (function () {
         setBody: function (key, body) {
             this.bodies[key] = body;
         },
+        removeBody: function (key) {
+            this.bodies[key].remove();
+            delete this.bodies[key];
+        },
+
         body: function (key) {
             return this.bodies[key];
         },
@@ -107,6 +112,9 @@ Node = (function () {
         },
         location: function (key) {
             return this.locations[key];
+        },
+        locationToPoint: function(key){
+            return Layout.arrayToPoint(this.locations[key]);
         }
     }
     //});
