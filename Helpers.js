@@ -3,9 +3,10 @@
  */
 Layout = {
     positionsAlongRadius: function( origin, length, angles ){
+        var self = this;
         var positions = [];
         _.each(angles, function(angle){
-            positions.push(positionAlongRadius(_.clone(origin), length, angle));
+            positions.push(self.positionAlongRadius(_.clone(origin), length, angle));
         });
 
         return positions;
