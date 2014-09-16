@@ -116,11 +116,7 @@ Context2D.prototype = {
         var graphics = new PIXI.Graphics();
 
         //graphics.beginFill(0xFFFF00);
-
-// set the line style to have a width of 5 and set the color to red
         graphics.lineStyle(1, 0xFF0000);
-
-// draw a rectangle
         graphics.drawRect(x, y, width, height);
 
         this.stage.addChild(graphics);
@@ -128,9 +124,16 @@ Context2D.prototype = {
         return graphics;
     },
 
-    removeBody: function (body) {
+    addCircle: function (x, y, radius) {
+        var graphics = new PIXI.Graphics();
 
-        this.stage.removeChild(body);
+        //graphics.beginFill(0xFFFF00);
+        graphics.lineStyle(1, 0xFF0000);
+        graphics.drawCircle(x, y, radius);
+
+        this.stage.addChild(graphics);
+
+        return graphics;
 
     },
 

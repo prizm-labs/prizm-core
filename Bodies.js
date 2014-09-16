@@ -32,16 +32,29 @@ Body2D = (function () {
             },
 
             getAbsoluteBounds: function( options, reference ){
+                
                 // default reference assuming Stage is parent
-
                 var bounds = this._entity.getBounds();
-
-                var x = this._entity.position.x+bounds.x*this._entity.scale.x,
-                    y = this._entity.position.y+bounds.y*this._entity.scale.y,
+                var x, y,
                     w = bounds.width*this._entity.scale.x,
                     h = bounds.height*this._entity.scale.y;
 
+
+                if (options) {
+                    if (options.center) { // return center point
+                        x = this._entity.position.x;
+                        y = this._entity.position.y;
+                    }
+                } else { // return top-left corner
+                    x = this._entity.position.x+bounds.x*this._entity.scale.x;
+                    y = this._entity.position.y+bounds.y*this._entity.scale.y;
+                }
+
                 return [x,y,w,h];
+            },
+
+            getCenterPoint: function(){
+
             },
 
             addTag: function( tag ){

@@ -194,6 +194,15 @@ UIManager = (function () {
         return newTarget;
     };
 
+    UIManager.prototype.addCircleTarget = function (x, y, radius, ctxKey, groupKey) {
+
+        var newTarget = new CircleTarget(x, y, radius, this.factory.contexts[ctxKey], this);
+
+        this.targets.all.push(newTarget);
+
+        return newTarget;
+    };
+
 
     UIManager.prototype.setTargetGroup = function (groupKey, targets) {
         var _this = this;
@@ -230,15 +239,9 @@ UIManager = (function () {
     return UIManager;
 })();
 
-function BoxTarget(x, y, width, height, context2D, manager) {
-
+function UITarget( context2D, manager ){
     //console.log('BoxTarget',context2D);
     this.manager = manager;
-
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
 
     this.active = false;
 
@@ -254,31 +257,18 @@ function BoxTarget(x, y, width, height, context2D, manager) {
         doubleTap: null
     };
 
-
-    // generate corners to evaluate contained point
-    this.corners = [];
-
-    this.corners.push([x, y], [x + width, y], [x, y + height], [x + width, y + height]);
 }
 
-BoxTarget.prototype = {
-
-    containsPoint: function (x, y) {
-        return !(x < this.corners[0][0] || x > this.corners[3][0]
-            || y < this.corners[0][1] || y > this.corners[3][1] );
-    },
-
+UITarget.prototype = {
     activate: function () {
-        this.graphics = this.context.addRectangle(this.x, this.y, this.width, this.height);
-        this.active = true;
 
+        this.active = true;
         this.manager.targets.active.push(this);
     },
 
     deactivate: function () {
-        this.context.removeBody(this.graphics);
-        this.active = false;
 
+        this.active = false;
         this.manager.targets.active = _.without(this.manager.targets.active, this);
         console.log('targets after deactivation', this.manager.targets.active);
     },
@@ -289,6 +279,71 @@ BoxTarget.prototype = {
 
     }
 };
+
+function CircleTarget (x, y, radius, context2D, manager) {
+    UITarget.call(this, context2D, manager);
+
+    // this is the origin point, i.e. anchor in center of associated body
+    this.x = x;
+    this.y = y;
+
+    this.radius = radius;
+}
+
+CircleTarget.prototype = Object.create(UITarget.prototype);
+_.extend( CircleTarget.prototype, {
+
+    containsPoint: function (x, y) {
+        //(center_x, center_y, radius, x, y):
+        var  square_dist = Math.pow((this.x - x), 2) + Math.pow((this.y - y), 2);
+        return square_dist < Math.pow(this.radius, 2);
+    },
+    activate: function(){
+        this.graphics = this.context.addCircle(this.x, this.y, this.radius);
+        UITarget.prototype.activate.call(this);
+    },
+
+    deactivate: function(){
+        this.context.removeBody(this.graphics);
+        UITarget.prototype.deactivate.call(this);
+    }
+});
+
+
+function BoxTarget (x, y, width, height, context2D, manager) {
+
+    UITarget.call(this, context2D, manager);
+
+    // this is the top left corner
+    this.x = x;
+    this.y = y;
+
+    this.width = width;
+    this.height = height;
+
+    // generate corners to evaluate contained point
+    this.corners = [];
+    this.corners.push([x, y], [x + width, y], [x, y + height], [x + width, y + height]);
+}
+
+BoxTarget.prototype = Object.create(UITarget.prototype);
+_.extend( BoxTarget.prototype, {
+
+    containsPoint: function (x, y) {
+        return !(x < this.corners[0][0] || x > this.corners[3][0]
+            || y < this.corners[0][1] || y > this.corners[3][1] );
+    },
+
+    activate: function(){
+        this.graphics = this.context.addRectangle(this.x, this.y, this.width, this.height);
+        UITarget.prototype.activate.call(this);
+    },
+
+    deactivate: function(){
+        this.context.removeBody(this.graphics);
+        UITarget.prototype.deactivate.call(this);
+    }
+});
 
 
 function Behavior(onStart, onUpdate, onStop) {
