@@ -32,12 +32,24 @@ Body2D = (function () {
             },
 
             getAbsoluteBounds: function( options, reference ){
-                
+
                 // default reference assuming Stage is parent
                 var bounds = this._entity.getBounds();
-                var x, y,
-                    w = bounds.width*this._entity.scale.x,
+
+                //TODO why does Sprite._bounds have scaled applied inconsistently???
+                //TODO workaround to detect if scale applied
+                var applyScaling = (bounds.x<0 && bounds.y<0);
+
+                var x, y, w, h;
+
+                if (applyScaling) {
+                    w = bounds.width*this._entity.scale.x;
                     h = bounds.height*this._entity.scale.y;
+                } else {
+                    w = bounds.width;
+                    h = bounds.height;
+                }
+
 
 
                 if (options) {
@@ -46,8 +58,16 @@ Body2D = (function () {
                         y = this._entity.position.y;
                     }
                 } else { // return top-left corner
-                    x = this._entity.position.x+bounds.x*this._entity.scale.x;
-                    y = this._entity.position.y+bounds.y*this._entity.scale.y;
+
+                    if (applyScaling) {
+                        x = this._entity.position.x+bounds.x*this._entity.scale.x;
+                        y = this._entity.position.y+bounds.y*this._entity.scale.y;
+                    } else {
+                        x = this._entity.position.x-bounds.width/2*this._entity.scale.x;
+                        y = this._entity.position.y-bounds.height/2*this._entity.scale.y;
+                    }
+
+
                 }
 
                 return [x,y,w,h];
