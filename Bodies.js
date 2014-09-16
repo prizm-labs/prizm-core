@@ -27,6 +27,8 @@ Body2D = (function () {
             children: [],
             tags: [],
 
+            state: {},
+
             setFrame: function( index ){
                 this._entity.gotoAndStop( index );
             },
@@ -109,6 +111,14 @@ Body2D = (function () {
                 this.runAnimations(callback);
             },
 
+            resize: function (x, y, duration, callback) {
+
+                this.registerAnimation('scale', {x:x,y:y},
+                        duration || 0);
+
+                this.runAnimations(callback);
+            },
+
             fade: function( alpha, duration, callback ){
 
                 this._entity.visible = true;
@@ -122,6 +132,7 @@ Body2D = (function () {
 
             rotate: function (rotation, duration, callback) {
                 this.rotation = rotation;
+
 
                 this.registerAnimation('rotation', rotation,
                         duration || 0);
