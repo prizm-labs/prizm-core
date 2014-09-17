@@ -14,6 +14,8 @@ GameWorld = (function () {
         this.nodes = [];
 
         this.state = {};
+
+        this.liveData = new LiveDataDelegate();
     }
 
 
@@ -47,6 +49,10 @@ GameWorld = (function () {
 
             this.view.preload();
 
+        },
+
+        bindStream: function( stream ){
+            this.stream = stream;
         },
 
         broadcast: function( channel, data ){

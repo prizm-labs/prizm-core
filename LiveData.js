@@ -10,10 +10,56 @@ LiveDataDelegate = function () {
 
         // with a translate function: position in 2D context
 
+
+        this.currentStream = null;
+        this.streams = {};
+
         this.subscriptions = {};
     }
 
     LiveDataDelegate.prototype = {
+
+
+        setupStream: function (streamId) {
+
+            var stream = new Meteor.Stream(streamId);
+            this.streams[streamId] = stream;
+        },
+
+        activateStream: function (streamId) {
+
+            if (this.streams[streamId]) this.currentStream = this.streams[streamId];
+        },
+
+        addTrigger: function(event, action){
+
+            this.currentStream.on(event,action);
+        },
+
+        addFilter: function (event, filterAction) {
+
+            if(Meteor.isServer) {
+
+                // Permissions
+                this.currentStream.permissions.read(function() {
+                    return true;
+                });
+                this.currentStream.permissions.write(function() {
+                    return true;
+                });
+
+
+                // Filters
+                this.currentStream.addFilter(function(eventName, args){
+                    return args;
+                });
+            }
+        },
+
+        broadcast: function (event, data) {
+
+            this.currentStream.emit(event, data);
+        },
 
         registerSubscription: function (collection, id, translation) {
 

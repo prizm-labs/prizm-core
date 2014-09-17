@@ -211,14 +211,14 @@ UIManager = (function () {
             _this.targetGroups[groupKey].push(target);
         });
 
-    }
+    };
 
 
     UIManager.prototype.checkEventOrigin = function () {
 
         // Is point contained by an active target?
 
-    }
+    };
 
 
     UIManager.prototype.addRelativeTarget = function (ctxKey, targetKey, target) {

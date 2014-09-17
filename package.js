@@ -8,7 +8,7 @@ Package.on_use(function (api) {
     api.use(["deps", "ejson", "underscore", "amplify"], ["client", "server"]);
 
     // vendor packages
-    api.use(["lodash"], ["client", "server"]);
+    api.use(["lodash","streams"], ["client", "server"]);
 
     Npm.depends({"shape2d": "0.0.5"});
 
@@ -29,7 +29,7 @@ Package.on_use(function (api) {
     api.export("PRIZM", ['client']);
 
     api.add_files(['vendor/shape2d/shape2d.js'], ['server']);
-    api.export("Shape", ['server']);
+    api.export(["Shape","LiveDataDelegate"], ['server']);
 });
 
 Package.on_test(function (api) {
