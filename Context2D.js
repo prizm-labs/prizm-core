@@ -121,7 +121,15 @@ Context2D.prototype = {
 
         this.stage.addChild(graphics);
 
-        return graphics;
+        //return graphics;
+
+        var uuid = Meteor.uuid();
+        this.entities[uuid] = graphics;
+
+        return {
+            id: uuid,
+            body: graphics
+        };
     },
 
     addCircle: function (x, y, radius) {
@@ -133,8 +141,15 @@ Context2D.prototype = {
 
         this.stage.addChild(graphics);
 
-        return graphics;
+        //return graphics;
 
+        var uuid = Meteor.uuid();
+        this.entities[uuid] = graphics;
+
+        return {
+            id: uuid,
+            body: graphics
+        };
     },
 
     addGroup: function (x, y, bodies) {

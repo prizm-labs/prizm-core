@@ -299,13 +299,17 @@ _.extend( CircleTarget.prototype, {
         return square_dist < Math.pow(this.radius, 2);
     },
     activate: function(){
-        this.graphics = this.context.addCircle(this.x, this.y, this.radius);
-        UITarget.prototype.activate.call(this);
+        if (!this.active) {
+            this.graphics = this.context.addCircle(this.x, this.y, this.radius);
+            UITarget.prototype.activate.call(this);
+        }
     },
 
     deactivate: function(){
-        this.context.removeBody(this.graphics);
-        UITarget.prototype.deactivate.call(this);
+        if (this.active) {
+            this.context.removeBody(this.graphics.id);
+            UITarget.prototype.deactivate.call(this);
+        }
     }
 });
 
@@ -335,13 +339,18 @@ _.extend( BoxTarget.prototype, {
     },
 
     activate: function(){
-        this.graphics = this.context.addRectangle(this.x, this.y, this.width, this.height);
-        UITarget.prototype.activate.call(this);
+        if (!this.active) {
+            this.graphics = this.context.addRectangle(this.x, this.y, this.width, this.height);
+            UITarget.prototype.activate.call(this);
+        }
     },
 
     deactivate: function(){
-        this.context.removeBody(this.graphics);
-        UITarget.prototype.deactivate.call(this);
+
+        if (this.active) {
+            this.context.removeBody(this.graphics.id);
+            UITarget.prototype.deactivate.call(this);
+        }
     }
 });
 

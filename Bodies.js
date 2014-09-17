@@ -24,6 +24,8 @@ Body2D = (function () {
             animations: [],
             onComplete: null,
 
+            hitArea: null,
+
             children: [],
             tags: [],
 
@@ -73,6 +75,12 @@ Body2D = (function () {
                 }
 
                 return [x,y,w,h];
+            },
+
+            setHitArea: function( uiTarget ){
+
+                this.hitArea = uiTarget;
+
             },
 
             getCenterPoint: function(){

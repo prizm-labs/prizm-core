@@ -15,6 +15,8 @@ LiveDataDelegate = function () {
         this.streams = {};
 
         this.subscriptions = {};
+
+        this.players = {};
     }
 
     LiveDataDelegate.prototype = {
@@ -36,19 +38,26 @@ LiveDataDelegate = function () {
             this.currentStream.on(event,action);
         },
 
+        mapCallerToPlayer: function( subscriptionId, userId ){
+            players[subscriptionId] = userId;
+        },
+
+        setPermissions: function () {
+
+            if (Meteor.isServer) {
+                // Permissions
+                this.currentStream.permissions.read(function () {
+                    return true;
+                });
+                this.currentStream.permissions.write(function () {
+                    return true;
+                });
+            }
+        },
+
         addFilter: function (event, filterAction) {
 
             if(Meteor.isServer) {
-
-                // Permissions
-                this.currentStream.permissions.read(function() {
-                    return true;
-                });
-                this.currentStream.permissions.write(function() {
-                    return true;
-                });
-
-
                 // Filters
                 this.currentStream.addFilter(function(eventName, args){
                     return args;
