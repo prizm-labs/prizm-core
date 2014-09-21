@@ -87,7 +87,20 @@ Body2D = (function () {
 
             },
 
-            addTag: function( tag ){
+            centerText: function() {
+                if (this.key == 'text') {
+                    this._entity.position.x = this._entity.position.x-this._entity.width/2;
+                }
+            },
+
+            addMask: function (shape, x, y, size) {
+
+                // Mask relative to body's parent
+                this.mask = this.ctx.addMask(shape, this.x+x, this.y+y, size);
+                this.ctx.maskBody(this._entity,this.mask.body)
+            },
+
+            addTag: function (tag) {
                   this.tags.push(tag);
             },
             addTags: function (tags) {
@@ -190,6 +203,8 @@ Body2D = (function () {
 
         if (key === 'group') {
             entity = ctx.addGroup(body.x, body.y);
+        } else if (key=='text') {
+            entity = ctx.addText(body.x, body.y, options.text, options.styles || null);
         } else {
             entity = ctx.addBody(body.x, body.y, key, options);
         }

@@ -139,17 +139,20 @@ Node = (function () {
         setBody: function (key, body) {
             this.bodies[key] = body;
         },
-        removeBody: function (key) {
+        removeBody: function (target) {
             var self = this;
-            var match = this.bodies[key];
+
+            if (typeof target=='string') {
+                target = this.bodies[target];
+            }
 
             // Find all references to body
             var keys = [];
             _.each(this.bodies, function(body,key){
-                if (body==match) keys.push(key);
+                if (body==target) keys.push(key);
             });
 
-            match.remove();
+            target.remove();
 
             _.each(keys,function(key){
                 delete self.bodies[key];

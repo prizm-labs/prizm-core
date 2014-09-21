@@ -37,6 +37,9 @@ ViewManager = (function () {
     return ViewManager;
 })();
 
+//TODO modal views???
+
+
 View = (function () {
 
     function View(key, width, height) {
@@ -116,12 +119,18 @@ View = (function () {
                     self.factory.loadTemplates2D(entry[1], entry[2], entry[3], function () {
                         console.log('loadTemplates2D callback', entry);
                         amplify.publish('preloadContext', {entry: entry});
-                    });
+                    }, entry[4]||null);
                 }
 
             });
 
             //TODO preload sounds !!!
+        },
+
+        addPreloadEntry: function (contextType, key, assetsPath, manifest) {
+            var entry = [contextType, key, assetsPath, manifest];
+            console.log('addPreloadEntry',entry);
+            this.preloadQueue.push(entry);
         },
 
         createContext2D: function (key, DOMAnchorId, renderingType, manifest, atlasPath, width, height) {
@@ -131,7 +140,7 @@ View = (function () {
 
             // create preload queue entry
             //this.factory.loadTemplates2D( key, atlasPath, JSON.parse(Assets.getText(manifest)) );
-            this.preloadQueue.push(['2D', key, atlasPath, manifest]);
+            this.addPreloadEntry('2D', key, atlasPath, manifest, false);
         },
 
         createContext3D: function (key, DOMAnchorId, manifest) {

@@ -29,10 +29,10 @@ Factory = (function () {
             //globalDep.changed();
         },
 
-        loadTemplates2D: function (ctxKey, file, manifest, callback) {
+        loadTemplates2D: function (ctxKey, file, manifest, callback, isCrossOrigin) {
 
             //ctx2D.load( file, manifest );
-            this.contexts[ctxKey].load(file, manifest, callback);
+            this.contexts[ctxKey].load(file, manifest, callback, isCrossOrigin);
         },
 
         makeBody3D: function (ctxKey, bodyKey, x, y, z, options) {

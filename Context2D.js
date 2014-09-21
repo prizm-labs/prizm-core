@@ -112,6 +112,53 @@ Context2D.prototype = {
 
     },
 
+    addObject: function( object, waitOnRender ){
+
+        // Postpone rendering to stage
+        if (!waitOnRender) {
+            this.stage.addChild(object);
+        }
+
+        var uuid = Meteor.uuid();
+        this.entities[uuid] = object;
+
+        return {
+            id: uuid,
+            body: object
+        };
+    },
+
+    addText: function (x, y, text, styles) {
+        // Style options
+        // http://www.goodboydigital.com/pixijs/docs/classes/Text.html
+//            [font] String optional
+//        default 'bold 20px Arial' The style and size of the font
+//
+//            [fill='black'] String | Number optional
+//        A canvas fillstyle that will be used on the text e.g 'red', '#00FF00'
+//
+//            [align='left'] String optional
+//        Alignment for multiline text ('left', 'center' or 'right'), does not affect single line text
+//
+//            [stroke] String | Number optional
+//        A canvas fillstyle that will be used on the text stroke e.g 'blue', '#FCFF00'
+//
+//            [strokeThickness=0] Number optional
+//        A number that represents the thickness of the stroke. Default is 0 (no stroke)
+//
+//        [wordWrap=false] Boolean optional
+//        Indicates if word wrap should be used
+//
+//            [wordWrapWidth=100] Number optional
+//        The width at which text will wrap, it needs wordWrap to be set to true
+
+        var textObject = new PIXI.Text( text, styles || null );
+        textObject.position.x = x;
+        textObject.position.y = y;
+
+        return this.addObject(textObject);
+    },
+
     addRectangle: function (x, y, width, height) {
         var graphics = new PIXI.Graphics();
 
@@ -119,17 +166,7 @@ Context2D.prototype = {
         graphics.lineStyle(1, 0xFF0000);
         graphics.drawRect(x, y, width, height);
 
-        this.stage.addChild(graphics);
-
-        //return graphics;
-
-        var uuid = Meteor.uuid();
-        this.entities[uuid] = graphics;
-
-        return {
-            id: uuid,
-            body: graphics
-        };
+        return this.addObject(graphics);
     },
 
     addCircle: function (x, y, radius) {
@@ -139,17 +176,7 @@ Context2D.prototype = {
         graphics.lineStyle(1, 0xFF0000);
         graphics.drawCircle(x, y, radius);
 
-        this.stage.addChild(graphics);
-
-        //return graphics;
-
-        var uuid = Meteor.uuid();
-        this.entities[uuid] = graphics;
-
-        return {
-            id: uuid,
-            body: graphics
-        };
+        return this.addObject(graphics);
     },
 
     addGroup: function (x, y, bodies) {
@@ -164,15 +191,7 @@ Context2D.prototype = {
             })
         }
 
-        this.stage.addChild(container);
-
-        var uuid = Meteor.uuid();
-        this.entities[uuid] = container;
-
-        return {
-            id: uuid,
-            body: container
-        };
+        return this.addObject(container);
     },
 
     addChildToGroup: function (id, body) {
@@ -221,54 +240,55 @@ Context2D.prototype = {
         body.anchor.x = 0.5;
         body.anchor.y = 0.5;
 
-
-        this.stage.addChild(body);
-
         console.log('new sprite', body);
-//        var graphics = new PIXI.Graphics();
-//
-//        //graphics.beginFill(0xFFFF00);
-//
-//// set the line style to have a width of 5 and set the color to red
-//        graphics.lineStyle(1, 0xFF0000);
-//
-//// draw a rectangle
-//        graphics.drawRect( x, y, width, height );
-//
-//        this.stage.addChild(graphics);
-//
-        requestAnimationFrame(this.animate.bind(self));
 
-        //Create UUID for a PixiJS Sprite
-        var uuid = Meteor.uuid();
-        this.entities[uuid] = body;
-        return {
-            id: uuid,
-            body: body
-        };
+        //requestAnimationFrame(this.animate.bind(self));
+
+        return this.addObject(body);
     },
 
-    //http://www.goodboydigital.com/pixi-js-brings-canvas-and-webgl-masking/
-    maskBody: function (body, maskOptions) {
+    addMask: function (shape, x, y, size) {
 
-        //{ shape: "circle", position: {x:0,y:0}, size: 10}
+        // Mask relative to body's parent
 
         var mask = new PIXI.Graphics();
         mask.beginFill();
 
-        if (maskOptions.shape == 'circle') {
-            mask.drawCircle(maskOptions.position.x,
-                maskOptions.position.y, maskOptions.size);
-        } else if (maskOptions.shape == 'rectangle') {
-
+        if (shape == 'circle') {
+            mask.drawCircle(x,y, size);
+        } else if (shape == 'rectangle') {
+            mask.drawRect(x, y, size[0], size[1]);
         }
 
         mask.endFill();
 
-        this.stage.addChild(mask);
+        return this.addObject(mask, true);
+    },
 
-        // the magic line!
+    //http://www.goodboydigital.com/pixi-js-brings-canvas-and-webgl-masking/
+    maskBody: function (body, mask) {
+
+        body.parent.addChild(mask);
         body.mask = mask;
+
+//        //{ shape: "circle", position: {x:0,y:0}, size: 10}
+//
+//        var mask = new PIXI.Graphics();
+//        mask.beginFill();
+//
+//        if (maskOptions.shape == 'circle') {
+//            mask.drawCircle(maskOptions.position.x,
+//                maskOptions.position.y, maskOptions.size);
+//        } else if (maskOptions.shape == 'rectangle') {
+//
+//        }
+//
+//        mask.endFill();
+//
+//        this.stage.addChild(mask);
+//
+//        // the magic line!
+//        body.mask = mask;
 
     },
 

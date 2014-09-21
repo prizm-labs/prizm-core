@@ -21,10 +21,10 @@ GameWorld = (function () {
 
     GameWorld.prototype = {
 
-        prepare: function (contexts) {
+        prepare: function (contexts, players) {
 
             var self = this;
-            console.log('prepareGameWorld', contexts);
+            console.log('prepareGameWorld', contexts, players);
             // preload each context
 
             // setup pubsub to track each context loading
@@ -39,16 +39,45 @@ GameWorld = (function () {
             this.view.createUIManager('hit-area');
 
             _.each(contexts, function (context, key) {
+
                 if (context.type == '2D') {
                     self.view.createContext2D(key, context.domAnchor, 'canvas',
                         context.manifest, context.atlas.map,
                         Session.get('viewport_width'), Session.get('viewport_height')
                     );
                 }
+
+                if (context.loadPlayers) {
+
+                    var manifest = self.createPlayerManifest(players);
+                    self.view.addPreloadEntry('2D',key,manifest[0],manifest[1],true);
+                }
             });
 
             this.view.preload();
 
+        },
+
+        createPlayerManifest: function (players) {
+
+            var paths = [];
+            var map = {};
+
+            _.each(players, function(player){
+               paths.push(player.avatar);
+               map[player.index]=player.avatar;
+            });
+
+            return [paths, [['avatar', map]] ];
+
+            // GOAL:
+//            var avatarUrls = ['https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xaf1/v/t1.0-1/c32.113.402.402/197820_10200365622437550_1307454223_n.jpg?oh=8c158d69e3b36d07539b721b9cd0f404&oe=5492CF89&__gda__=1418764606_1684123b2a18eb8f4ab3bc3252c1e156',
+//                'https://lh5.googleusercontent.com/-TbxFjAU9Vpg/AAAAAAAAAAI/AAAAAAAAAJU/ZiJRz12XYco/photo.jpg'];
+//            var avatarManifest = [
+//                [ 'avatar', {
+//                    'p1':'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xaf1/v/t1.0-1/c32.113.402.402/197820_10200365622437550_1307454223_n.jpg?oh=8c158d69e3b36d07539b721b9cd0f404&oe=5492CF89&__gda__=1418764606_1684123b2a18eb8f4ab3bc3252c1e156',
+//                    'p2':'https://lh5.googleusercontent.com/-TbxFjAU9Vpg/AAAAAAAAAAI/AAAAAAAAAJU/ZiJRz12XYco/photo.jpg'}]
+//            ];
         },
 
         bindStream: function( stream ){
