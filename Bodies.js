@@ -140,9 +140,16 @@ Body2D = (function () {
                 this.runAnimations(callback);
             },
 
+            hide: function(){
+                this._entity.visible = false;
+            },
+            show: function(){
+                this._entity.visible = true;
+            },
+
             fade: function( alpha, duration, callback ){
 
-                this._entity.visible = true;
+                this.show();
 
                 this.alpha = alpha;
                 this.registerAnimation('alpha', alpha,

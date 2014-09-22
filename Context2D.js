@@ -196,8 +196,12 @@ Context2D.prototype = {
 
     addChildToGroup: function (id, body) {
         var group = this.getEntity(id);
+
+
         //_.each(bodies, function( body ){
         group.addChild(body);
+        // TODO add body's mask to group, if not child of group yet
+//        if (body._mask) group.addChild(body._mask);
         //})
     },
 
@@ -270,26 +274,6 @@ Context2D.prototype = {
 
         body.parent.addChild(mask);
         body.mask = mask;
-
-//        //{ shape: "circle", position: {x:0,y:0}, size: 10}
-//
-//        var mask = new PIXI.Graphics();
-//        mask.beginFill();
-//
-//        if (maskOptions.shape == 'circle') {
-//            mask.drawCircle(maskOptions.position.x,
-//                maskOptions.position.y, maskOptions.size);
-//        } else if (maskOptions.shape == 'rectangle') {
-//
-//        }
-//
-//        mask.endFill();
-//
-//        this.stage.addChild(mask);
-//
-//        // the magic line!
-//        body.mask = mask;
-
     },
 
     updateBodyDirect: function (body, attributes) {

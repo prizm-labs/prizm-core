@@ -23,16 +23,21 @@ Layout = {
     },
 
     distributePositionsAcrossWidth: function( origin, count, width ){
-        origin = this.arrayToPoint(origin);
 
         var positions = [];
-        for (var p=0; p<count; p++){
-            positions.push([ origin.x+p*width/(count-1)-(width/2), origin.y ]);
+
+        if (count==1){
+            positions.push(origin);
+        } else {
+            origin = this.arrayToPoint(origin);
+            for (var p=0; p<count; p++){
+                positions.push([ origin.x+p*width/(count-1)-(width/2), origin.y ]);
+            }
         }
 
         return positions;
     },
-    arrayToPoint: function( data ){
+    arrayToPoint: function (data) {
         if (Array.isArray(data))
             return {x:data[0],y:data[1]};
         else

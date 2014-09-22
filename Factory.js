@@ -54,6 +54,7 @@ Factory = (function () {
         },
 
         makeGroup2D: function (ctxKey, properties) {
+            if (Array.isArray(properties)) properties = {x:properties[0],y:properties[1]};
             var group = new Body2D(this.contexts[ctxKey], properties.x, properties.y, 'group');
 
             return group;
