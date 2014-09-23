@@ -128,7 +128,7 @@ Context2D.prototype = {
         };
     },
 
-    addText: function (x, y, text, styles) {
+    addText: function (x, y, text, styles, options) {
         // Style options
         // http://www.goodboydigital.com/pixijs/docs/classes/Text.html
 //            [font] String optional
@@ -154,36 +154,41 @@ Context2D.prototype = {
 
         var textObject = new PIXI.Text( text, styles || null );
         textObject.position.x = x;
-        textObject.position.y = y;
+        textObject.position.y = (styles.fontSize) ? y-styles.fontSize*0.6 : y;
+
+        textObject.visible = (typeof options.visible=='undefined') ? true : options.visible;
 
         return this.addObject(textObject);
     },
 
-    addRectangle: function (x, y, width, height) {
+    addRectangle: function (x, y, width, height, strokeColor, fillColor, options) {
         var graphics = new PIXI.Graphics();
 
-        //graphics.beginFill(0xFFFF00);
-        graphics.lineStyle(1, 0xFF0000);
+        if (fillColor) graphics.beginFill(fillColor);
+        if (strokeColor) graphics.lineStyle(1, strokeColor);
         graphics.drawRect(x, y, width, height);
 
+        this.setDefaultProperties(graphics, null, null, options||{});
+
         return this.addObject(graphics);
     },
 
-    addCircle: function (x, y, radius) {
+    addCircle: function (x, y, radius, strokeColor, fillColor, options) {
         var graphics = new PIXI.Graphics();
 
-        //graphics.beginFill(0xFFFF00);
-        graphics.lineStyle(1, 0xFF0000);
+        if (fillColor) graphics.beginFill(fillColor);
+        if (strokeColor) graphics.lineStyle(1, strokeColor);
         graphics.drawCircle(x, y, radius);
+
+        this.setDefaultProperties(graphics, null, null, options||{});
 
         return this.addObject(graphics);
     },
 
-    addGroup: function (x, y, bodies) {
+    addGroup: function (x, y, bodies, options) {
         var container = new PIXI.DisplayObjectContainer();
 
-        container.position.x = x;
-        container.position.y = y;
+        this.setDefaultProperties(container, x, y, options||{});
 
         if (typeof bodies === 'object' && bodies.length > 0) {
             _.each(bodies, function (body) {
@@ -196,7 +201,6 @@ Context2D.prototype = {
 
     addChildToGroup: function (id, body) {
         var group = this.getEntity(id);
-
 
         //_.each(bodies, function( body ){
         group.addChild(body);
@@ -228,18 +232,7 @@ Context2D.prototype = {
             body = new PIXI.Sprite(body);
         }
 
-        body.visible = (typeof options.visible=='undefined') ? true : options.visible;
-
-        body.position.x = x;
-        body.position.y = y;
-
-        if (options.scale) {
-            body.scale.x = body.scale.x * options.scale;
-            body.scale.y = body.scale.y * options.scale;
-        }
-
-        if (options.rotation)
-            body.rotation = options.rotation;
+        this.setDefaultProperties(body, x, y, options||{});
 
         body.anchor.x = 0.5;
         body.anchor.y = 0.5;
@@ -249,6 +242,22 @@ Context2D.prototype = {
         //requestAnimationFrame(this.animate.bind(self));
 
         return this.addObject(body);
+    },
+
+    setDefaultProperties: function (body, x, y, options) {
+
+        if (x!==null) body.position.x = x;
+        if (y!==null) body.position.y = y;
+
+        if (options.scale) {
+            body.scale.x = body.scale.x * options.scale;
+            body.scale.y = body.scale.y * options.scale;
+        }
+
+        if (options.rotation)
+            body.rotation = options.rotation;
+
+        body.visible = (typeof options.visible=='undefined') ? true : options.visible;
     },
 
     addMask: function (shape, x, y, size) {

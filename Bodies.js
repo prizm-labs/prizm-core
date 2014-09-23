@@ -202,22 +202,58 @@ Body2D = (function () {
 
             remove: function(){
                 this.ctx.removeBody(this.id);
-            }
+            },
 
+            setText: function(text){
+                this._entity.setText(text);
+            },
+
+            createEntity: function (key) {
+
+                var entity;
+
+                switch (key){
+
+                    case 'group':
+                        entity = ctx.addGroup(body.x, body.y);
+                        break;
+
+                    case 'text':
+                        entity = ctx.addText(body.x, body.y, options.text, options.styles || null, options);
+                        break;
+
+                    case 'circle':
+                        entity = ctx.addCircle(body.x, body.y, options.radius,
+                                options.strokeColor||null, options.fillColor||null, options);
+                        break;
+
+                    case 'rectangle':
+                        entity = ctx.addRectangle(body.x, body.y, options.width, options.height,
+                                options.strokeColor||null, options.fillColor||null, options);
+                        break;
+
+                    default:
+                        entity = ctx.addBody(body.x, body.y, key, options);
+                        break;
+                }
+
+                this._entity = entity.body;
+                this.id = entity.id;
+            }
         };
 
-        var entity;
 
-        if (key === 'group') {
-            entity = ctx.addGroup(body.x, body.y);
-        } else if (key=='text') {
-            entity = ctx.addText(body.x, body.y, options.text, options.styles || null);
-        } else {
-            entity = ctx.addBody(body.x, body.y, key, options);
-        }
 
-        body._entity = entity.body;
-        body.id = entity.id;
+//        if (key === 'group') {
+//            entity = ctx.addGroup(body.x, body.y);
+//        } else if (key=='text') {
+//            entity = ctx.addText(body.x, body.y, options.text, options.styles || null, options);
+//        } else {
+//            entity = ctx.addBody(body.x, body.y, key, options);
+//        }
+
+
+        body.createEntity(key);
 
 
         Deps.autorun(function (c) {

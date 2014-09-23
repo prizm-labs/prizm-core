@@ -300,7 +300,7 @@ _.extend( CircleTarget.prototype, {
     },
     activate: function(){
         if (!this.active) {
-            this.graphics = this.context.addCircle(this.x, this.y, this.radius);
+            this.graphics = this.context.addCircle(this.x, this.y, this.radius, 0xFF0000);
             UITarget.prototype.activate.call(this);
         }
     },
@@ -340,7 +340,7 @@ _.extend( BoxTarget.prototype, {
 
     activate: function(){
         if (!this.active) {
-            this.graphics = this.context.addRectangle(this.x, this.y, this.width, this.height);
+            this.graphics = this.context.addRectangle(this.x, this.y, this.width, this.height, 0xFF0000);
             UITarget.prototype.activate.call(this);
         }
     },

@@ -43,6 +43,13 @@ Factory = (function () {
             return body;
         },
 
+        makeShape2D: function(ctxKey, shape, properties, options) {
+            if (Array.isArray(properties)) properties = {x:properties[0],y:properties[1]};
+            var body = new Body2D(this.contexts[ctxKey], properties.x, properties.y, shape, options);
+
+            return body;
+        },
+
         makeBody2D: function (ctxKey, bodyKey, properties, options) {
 
             //console.log('makeBody',this.contexts[ctxKey].constructor.name);
