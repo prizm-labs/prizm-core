@@ -17,6 +17,7 @@ PRIZM = {
     View: View,
     ViewManager: ViewManager,
     Layout: Layout,
+    Colors: Colors,
 
     UIManager: UIManager,
     SoundManager: SoundManager,

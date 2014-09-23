@@ -57,3 +57,16 @@ Layout = {
         }
     }
 }
+
+Colors = {
+    stringToHex: function(color){
+        if (typeof color === 'string') {
+            color = parseInt(color.replace(/^#/, ''), 16);
+        }
+        console.log('color converter to hex', color);
+        return color;
+    },
+    hexToString: function(){
+
+    }
+}

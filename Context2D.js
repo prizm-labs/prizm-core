@@ -49,10 +49,7 @@ Context2D.prototype = {
 
     setBackgroundColor: function (color) {
         console.log('setBackgroundColor', color);
-        if (typeof color === 'string') {
-            color = parseInt(color.replace(/^#/, ''), 16);
-        }
-        console.log('color converter to hex', color);
+        color = Colors.stringToHex(color);
         this.stage.setBackgroundColor(color);
         this.animate();
     },
@@ -330,6 +327,8 @@ Context2D.prototype = {
         var timeline = new TimelineLite(timelineOptions);
         //console.log('updateBody', entity, body);
 
+
+
         if (body.animations.length > 0) {
 
             _.each(body.animations, function (animation) {
@@ -355,6 +354,9 @@ Context2D.prototype = {
                     console.log('tweening',attribute, duration, values);
 
                     if (typeof values === 'object') {
+
+                        values['ease'] = 'Linear.easeNone';
+
                         // i.e. position
                         if (options){
                             if (options.parallel) TweenLite.to(entity[attribute], duration, values)
@@ -366,6 +368,7 @@ Context2D.prototype = {
                         // i.e. alpha, rotation
                         var obj = {};
                         obj[attribute]=values;
+                        obj['ease'] = 'Linear.easeNone';
 
                         if (options){
                             if (options.parallel) TweenLite.to(entity, duration, obj);

@@ -100,6 +100,11 @@ Body2D = (function () {
                 this.ctx.maskBody(this._entity,this.mask.body)
             },
 
+            setMask: function(body){
+                this.mask = body;
+                this.ctx.maskBody(this._entity,body._entity);
+            },
+
             addTag: function (tag) {
                   this.tags.push(tag);
             },
@@ -175,7 +180,7 @@ Body2D = (function () {
 
             registerAnimation: function (attributeKey, attributeValues, duration, options) {
                 this.animations.push([attributeKey, attributeValues, duration, options]);
-                console.log('registerAnimation', this.animations);
+                //console.log('registerAnimation', this.animations);
             },
 
             runAnimations: function ( callback ) {
