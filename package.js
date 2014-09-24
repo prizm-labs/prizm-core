@@ -24,6 +24,9 @@ Package.on_use(function (api) {
         'Nodes.js', 'Interactions.js', 'Sound.js', 'Cameras.js', 'Views.js', 'GameWorld.js'], ['client']);
     api.add_files(['classes/pieceLocation.js', 'LiveData.js'], ['client', 'server']);
 
+    // Node classes
+    api.add_files([ 'Modal.js', 'Timer.js'], ['client']);
+
     // bundle & exports
     api.add_files(['core.js'], ['client']);
     api.export("PRIZM", ['client']);

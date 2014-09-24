@@ -11,6 +11,10 @@ PRIZM = {
     Factory: Factory,
 
     Node: Node,
+    Nodes: {
+        Modal: ModalNode,
+        Timer: TimerNode
+    },
     NodeMatrix: NodeMatrix,
 
     GameWorld: GameWorld,
