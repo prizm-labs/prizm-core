@@ -66,6 +66,8 @@ Node = (function () {
         this.links = {}; // stored procedures for node traversal
 
         // associations with other nodes
+        this.nodes = [];
+
         this.guests = [];
         this.hosts = [];
 
@@ -139,6 +141,9 @@ Node = (function () {
         setBody: function (key, body) {
             this.bodies[key] = body;
         },
+        body: function (key) {
+            return this.bodies[key];
+        },
         removeBody: function (target) {
             var self = this;
 
@@ -160,9 +165,19 @@ Node = (function () {
 
         },
 
-        body: function (key) {
-            return this.bodies[key];
+        addNode: function (node) {
+            this.nodes.push(node);
         },
+        nodesWithTag: function (tag) {
+            var result = [];
+            _.each( this.nodes, function(node) {
+                if (node.hasTag(tag)) result.push(node);
+            });
+
+            return result;
+        },
+
+
         setLocation: function (key, x, y) {
             this.locations[key] = [x, y];
         },

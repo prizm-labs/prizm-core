@@ -41,13 +41,13 @@ _.extend( ModalNode.prototype, {
         this.setBody('container',objectContainer);
     },
 
-    prepare: function(presentMode, resignMode, renderAction, onResign, onPresent) {
+    prepare: function(presentMode, resignMode, renderAction, onPresent, onResign) {
 
         this.state['presentMode'] = presentMode;
         renderAction.call(this);
 
-        if (onPresent) this.state['onPresent'] = onPresent;
-        if (onResign) this.state['onResign'] = onResign;
+        if (onPresent) this.state['onPresent'] = onPresent.bind(this);
+        if (onResign) this.state['onResign'] = onResign.bind(this);
     },
 
     present: function(){
@@ -68,7 +68,7 @@ _.extend( ModalNode.prototype, {
 
         // Instant show
 
-        if (this.state['onPresent']) this.state['onPresent'].call(this);
+        if (this.state['onPresent']) this.state['onPresent']();
     },
 
     resign: function(){
@@ -89,6 +89,6 @@ _.extend( ModalNode.prototype, {
 
         // Instant hide
 
-        if (this.state['onResign']) this.state['onResign'].call(this);
+        if (this.state['onResign']) this.state['onResign']();
     }
 });

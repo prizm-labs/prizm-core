@@ -4,6 +4,8 @@
 
 TimerNode = function (){
     Node.call(this);
+
+    this.addTag('timer');
 };
 
 TimerNode.prototype = Object.create(Node.prototype);
@@ -26,11 +28,16 @@ _.extend( TimerNode.prototype, {
         this.setBody('container', container);
     },
 
-    renderNumber: function() {
+    renderNumber: function(type) {
+
+
+        // Assuming number is seconds
+        this.state['displayType'] = type;
 
         // Create number text
+        // show max time remaining
         var countdownText = this.world.view.factory.makeBody2D( this.ctx,
-            'text', [0,0], { text:3,
+            'text', [0,0], { text:this.timeRemainingInSeconds(),
                 styles:{
                     font: 'normal 100px Helvetica',
                     fontSize: 100,
@@ -40,6 +47,23 @@ _.extend( TimerNode.prototype, {
         this.body('container').addChild(countdownText);
         this.setBody('countdownText',countdownText);
 
+
+
+        this.configureInternalEvents(
+            function(){
+                // if (this.state['displayNumber'])
+                this.body('countdownText').setText(this.timeRemainingInSeconds());
+            },
+            function(){
+                this.body('countdownText').setText(this.timeRemainingInSeconds());
+            },
+            function(){
+                this.body('countdownText').setText(this.timeRemainingInSeconds());
+            });
+    },
+
+    timeRemainingInSeconds: function(){
+        return Math.floor( (this.state['maxTime']-this.state['currentTime'])/1000 );
     },
 
     renderPie: function (radius, progressColor, backgroundColor) {
@@ -76,6 +100,30 @@ _.extend( TimerNode.prototype, {
         var mask = self.world.view.factory.makeShape2D( this.ctx, 'circle',
             center,{ radius:radius, fillColor:0xFFFFFF } );
         this.body('container').setMask(mask);
+
+
+        this.configureInternalEvents(function(){
+            //var rotation = Math.PI+progress*(Math.PI);
+            this.body('progressA').rotate(2*Math.PI,this.state['maxTime']/2/1000, function(){
+
+                // At halfway point
+                // Hide progress A
+
+                //Meteor.setTimeout(function(){
+                self.body('progressA').hide();
+                self.body('progressA').rotate(0);
+
+                self.body('backgroundA').show();
+                self.body('backgroundA').rotate(2*Math.PI,self.state['maxTime']/2/1000, function(){
+
+                    console.log('animation complete!');
+                    //self.reset();
+
+                });
+                //},self.state['maxTime']/2);
+
+            });
+        })
     },
 
     createSemiCircle: function (radius, fillColor) {
@@ -102,7 +150,9 @@ _.extend( TimerNode.prototype, {
     },
 
     configureInternalEvents: function (onStart, onProgress, onComplete) {
-
+        if (onStart) this.state['_onStart'] = onStart.bind(this);
+        if (onProgress) this.state['_onProgress'] = onProgress.bind(this);
+        if (onComplete) this.state['_onComplete'] = onComplete.bind(this);
     },
 
 
@@ -120,27 +170,8 @@ _.extend( TimerNode.prototype, {
 
         this.state['active'] = true;
 
-        //var rotation = Math.PI+progress*(Math.PI);
-        this.body('progressA').rotate(2*Math.PI,this.state['maxTime']/2/1000, function(){
 
-            // At halfway point
-            // Hide progress A
-
-            //Meteor.setTimeout(function(){
-            self.body('progressA').hide();
-            self.body('progressA').rotate(0);
-
-            self.body('backgroundA').show();
-            self.body('backgroundA').rotate(2*Math.PI,self.state['maxTime']/2/1000, function(){
-
-                console.log('animation complete!');
-                //self.reset();
-
-            });
-            //},self.state['maxTime']/2);
-
-        });
-
+        if (this.state['_onStart']) this.state['_onStart']();
         //self.onProgress();
 
         this.state['intervalHandle'] = Meteor.setInterval(function(){
@@ -154,7 +185,8 @@ _.extend( TimerNode.prototype, {
         this.state['currentTime'] += this.state['delta'];
         this.state['progress'] = this.state['currentTime']/this.state['maxTime'];
 
-        this.state['onProgress'](this.state['progress'],this.state['currentTime'],this.state['delta']);
+        if (this.state['_onProgress']) this.state['_onProgress'](this.state['progress'],this.state['currentTime'],this.state['delta']);
+        if (this.state['onProgress']) this.state['onProgress'](this.state['progress'],this.state['currentTime'],this.state['delta']);
 
         if (this.state['currentTime'] == this.state['maxTime']) {
             this.onComplete();
@@ -169,7 +201,8 @@ _.extend( TimerNode.prototype, {
 
         console.log('internal onComplete',this);
 
-        this.state['onComplete']();
+        if (this.state['_onComplete'])this.state['_onComplete']();
+        if (this.state['onComplete'])this.state['onComplete']();
     },
 
     reset: function(){
