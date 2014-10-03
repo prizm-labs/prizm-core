@@ -5,9 +5,14 @@
 GameWorld = (function () {
 
     function GameWorld() {
-        this.preloaded = false;
+        this.preloaded = {
+            all:false,
+            view: false,
+            sound: false
+        };
         this.rendered = false;
         this.view = null;
+        this.sound = null;
 
         this._methods = {};
 
@@ -21,19 +26,40 @@ GameWorld = (function () {
 
     GameWorld.prototype = {
 
-        prepare: function (contexts, players) {
+        checkPreloadComplete: function(){
+            console.log('checkPreloadComplete',this.preloaded);
+
+            if (this.preloaded.view && this.preloaded.sound && !this.preloaded.all) {
+                this.preloaded.all=true;
+
+            }
+
+            return this.preloaded.all;
+        },
+
+        prepare: function (contexts, players, sounds) {
 
             var self = this;
-            console.log('prepareGameWorld', contexts, players);
+            console.log('prepareGameWorld', contexts, players, sounds);
             // preload each context
 
             // setup pubsub to track each context loading
             // when all contexts loaded, notify server
-            amplify.subscribe('preloadView', function (data) {
-                self.preloaded = true;
+            amplify.subscribe('preloadComplete', function (key) {
+                self.preloaded[key] = true;
+                if (self.checkPreloadComplete()){
 
-                Meteor.call('clientReadyForGameSession', Session.get('client_id'), Session.get('arena')._id)
+                    console.log('notifying client preload complete');
+                    Meteor.call('clientReadyForGameSession',
+                        Session.get('client_id'),
+                        Session.get('arena')._id,
+                        Session.get('gameState_id')
+                    );
+                }
             });
+
+            this.sound = new SoundManager();
+            this.sound.loadGroup( 'default', sounds.entries, sounds.directory );
 
             this.view = new View('main', Session.get('viewport_width'), Session.get('viewport_height'));
             this.view.createUIManager('hit-area');

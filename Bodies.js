@@ -203,6 +203,10 @@ Body2D = (function () {
 
             remove: function(){
                 this.ctx.removeBody(this.id);
+
+                if (this.hitArea!=null){
+                    this.hitArea.remove();
+                }
             },
 
             setText: function(text){

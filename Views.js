@@ -84,7 +84,8 @@ View = (function () {
             console.log('preloadContext after entry removed', self.preloadQueue.length);
 
             if (self.preloadQueue.length == 0) {
-                amplify.publish('preloadView', {view: self.key})
+                amplify.publish('preloadComplete', 'view');
+                //amplify.publish('preloadComplete', {view: self.key})
             }
 
         });

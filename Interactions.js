@@ -58,6 +58,9 @@ UIManager = (function () {
 
             // Set active target?
 
+            // TODO handle overlapping targets???
+            // TODO handle multitouch???
+
             if (_this.activeTarget == null) {
 
                 var activeTarget = _this.checkForActivePoint(event.center.x, event.center.y);
@@ -277,6 +280,13 @@ UITarget.prototype = {
 
         this.behaviors[eventType] = new Behavior(onStart, onUpdate, onStop);
 
+    },
+
+    remove: function(){
+        this.deactivate();
+        console.log('targets before removal',this.manager.targets.all.length);
+        this.manager.targets.all = _.without(this.manager.targets.all, this);
+        console.log('targets after removal',this.manager.targets.all.length);
     }
 };
 
