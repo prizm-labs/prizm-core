@@ -50,7 +50,10 @@ _.extend( ModalNode.prototype, {
         if (onResign) this.state['onResign'] = onResign.bind(this);
     },
 
-    present: function(){
+    present: function(options){
+
+        // send root to front of context
+        this.world.view.contexts[this.ctx].sendBodyToFront(this.body('root').entity());
 
         this.body('root').show();
 
@@ -68,7 +71,7 @@ _.extend( ModalNode.prototype, {
 
         // Instant show
 
-        if (this.state['onPresent']) this.state['onPresent']();
+        if (this.state['onPresent']) this.state['onPresent'](options);
     },
 
     resign: function(){

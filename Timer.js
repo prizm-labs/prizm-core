@@ -53,12 +53,16 @@ _.extend( TimerNode.prototype, {
             function(){
                 // if (this.state['displayNumber'])
                 this.body('countdownText').setText(this.timeRemainingInSeconds());
+                this.body('countdownText').centerText();
             },
             function(){
                 this.body('countdownText').setText(this.timeRemainingInSeconds());
+                this.body('countdownText').centerText();
             },
             function(){
-                this.body('countdownText').setText(this.timeRemainingInSeconds());
+               // this.body('countdownText').setText(this.timeRemainingInSeconds());
+                this.body('countdownText').setText('GO!');
+                this.body('countdownText').centerText();
             });
     },
 
@@ -156,10 +160,11 @@ _.extend( TimerNode.prototype, {
     },
 
 
-    configureEvents: function (onProgress, onComplete) {
+    configureEvents: function ( onStart, onProgress, onComplete) {
 
-        this.state['onProgress'] = onProgress.bind(this);
-        this.state['onComplete'] = onComplete.bind(this);
+        if (onStart) this.state['onStart'] = onStart.bind(this);
+        if (onProgress) this.state['onProgress'] = onProgress.bind(this);
+        if (onComplete) this.state['onComplete'] = onComplete.bind(this);
     },
 
     start: function(){
@@ -172,6 +177,7 @@ _.extend( TimerNode.prototype, {
 
 
         if (this.state['_onStart']) this.state['_onStart']();
+        if (this.state['onStart']) this.state['onStart']();
         //self.onProgress();
 
         this.state['intervalHandle'] = Meteor.setInterval(function(){

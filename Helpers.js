@@ -23,6 +23,7 @@ Layout = {
     },
 
     distributePositionsAcrossWidth: function( origin, count, width ){
+        //origin = this.arrayToPoint(origin);
 
         var positions = [];
 
@@ -37,6 +38,24 @@ Layout = {
 
         return positions;
     },
+
+    distributePositionsAcrossHeight: function( origin, count, height ){
+        //origin = this.arrayToPoint(origin);
+
+        var positions = [];
+
+        if (count==1){
+            positions.push(origin);
+        } else {
+            origin = this.arrayToPoint(origin);
+            for (var p=0; p<count; p++){
+                positions.push([ origin.x, origin.y+p*height/(count-1)-(height/2) ]);
+            }
+        }
+
+        return positions;
+    },
+
     arrayToPoint: function (data) {
         if (Array.isArray(data))
             return {x:data[0],y:data[1]};

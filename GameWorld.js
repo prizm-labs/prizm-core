@@ -58,6 +58,12 @@ GameWorld = (function () {
 
         },
 
+        exit: function(){
+
+            // TODO teardown & reset contexts
+
+        },
+
         createPlayerManifest: function (players) {
 
             var paths = [];
@@ -100,13 +106,23 @@ GameWorld = (function () {
         addNode: function (node) {
             this.nodes.push(node);
         },
+//        nodesWithTag: function (tag) {
+//            var result = [];
+//            _.each( this.nodes, function(node) {
+//                if (node.hasTag(tag)) result.push(node);
+//            });
+//
+//            return result;
+//        },
         nodesWithTag: function (tag) {
-            var result = [];
-            _.each( this.nodes, function(node) {
-                if (node.hasTag(tag)) result.push(node);
+            return _.filter( this.nodes, function(node) {
+                return node.hasTag(tag);
             });
-
-            return result;
+        },
+        nodesWithTags: function (tags) {
+            return _.filter( this.nodes, function(node) {
+                return node.hasTags(tags);
+            });
         },
 
         bindUI: function () {

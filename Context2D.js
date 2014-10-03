@@ -109,6 +109,44 @@ Context2D.prototype = {
 
     },
 
+    sendBodyToFront: function(body){
+
+        var index = this.stage.children.indexOf(body);
+        console.log('sendBodyToFront',index);
+        if (index==-1) return;
+
+        this.shiftBody(index,this.stage.children.length-1);
+    },
+
+    sendBodyToBack: function(body){
+
+        var index = this.stage.children.indexOf(body);
+        console.log('sendBodyToBack',index);
+        if (index==-1) return;
+
+        this.shiftBody(index,0);
+    },
+
+    shiftBody: function (old_index, new_index) {
+
+        var children = this.stage.children;
+
+        while (old_index < 0) {
+            old_index += children.length;
+        }
+        while (new_index < 0) {
+            new_index += children.length;
+        }
+        if (new_index >= children.length) {
+            var k = new_index - children.length;
+            while ((k--) + 1) {
+                children.push(undefined);
+            }
+        }
+        children.splice(new_index, 0, children.splice(old_index, 1)[0]);
+        return children; // for testing purposes
+    },
+
     addObject: function( object, waitOnRender ){
 
         // Postpone rendering to stage
@@ -275,7 +313,7 @@ Context2D.prototype = {
         return this.addObject(mask, true);
     },
 
-    //http://www.goodboydigital.com/pixi-js-brings-canvas-and-webgl-masking/
+//http://www.goodboydigital.com/pixi-js-brings-canvas-and-webgl-masking/
     maskBody: function (body, mask) {
 
         body.parent.addChild(mask);

@@ -87,11 +87,6 @@ Body2D = (function () {
 
             },
 
-            centerText: function() {
-                if (this.key == 'text') {
-                    this._entity.position.x = this._entity.position.x-this._entity.width/2;
-                }
-            },
 
             addMask: function (shape, x, y, size) {
 
@@ -108,6 +103,7 @@ Body2D = (function () {
             addTag: function (tag) {
                   this.tags.push(tag);
             },
+
             addTags: function (tags) {
                 _.each(tags, this.addTag.bind(this));
             },
@@ -197,7 +193,7 @@ Body2D = (function () {
             },
 
             entity: function () {
-                return this.ctx.getEntity(this.id);
+                return this._entity;
             },
 
             addChild: function (body2D) {
@@ -212,6 +208,12 @@ Body2D = (function () {
             setText: function(text){
                 this._entity.setText(text);
             },
+            centerText: function() {
+                if (this.key == 'text') {
+                    this._entity.position.x = this.x-this._entity.width/2;
+                }
+            },
+
 
             createEntity: function (key) {
 
