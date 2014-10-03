@@ -67,6 +67,16 @@ Factory = (function () {
             return group;
         },
 
+        makeButton2D: function(){
+
+            // draw rounded rectangle
+
+            // draw text
+
+
+            // create hit area target
+        },
+
         makeCamera3D: function (ctx3DKey, x, y, z, fov, near, far) {
 
             var aspect = this.contexts[ctx3DKey].options.width / this.contexts[ctx3DKey].options.height;
