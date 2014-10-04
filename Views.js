@@ -42,8 +42,10 @@ ViewManager = (function () {
 
 View = (function () {
 
-    function View(key, width, height) {
+    function View(key, width, height, world) {
         var self = this;
+
+        this.world = world;
 
         this.allContextsLoaded = false;
 
@@ -78,7 +80,7 @@ View = (function () {
         }
 
         // notify client that all view's contexts are preloaded
-        amplify.subscribe('preloadContext', function (data) {
+        this.world.subscribe('preloadContext', function (data) {
             console.log('preloadContext', data);
             self.preloadQueue = _.without(self.preloadQueue, data.entry);
             console.log('preloadContext after entry removed', self.preloadQueue.length);

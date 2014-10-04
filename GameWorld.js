@@ -5,6 +5,7 @@
 GameWorld = (function () {
 
     function GameWorld() {
+
         this.preloaded = {
             all:false,
             view: false,
@@ -21,10 +22,37 @@ GameWorld = (function () {
         this.state = {};
 
         this.liveData = new LiveDataDelegate();
+
+        // Cache pubsub callbacks for cleanup
+        this.subscriptions = {};
     }
 
 
     GameWorld.prototype = {
+
+        subscribe: function(topic, callback, listener){
+
+            // Create key
+            this.subscriptions[Meteor.hashid()] = {
+                topic: topic,
+                callback: callback,
+                listener: listener
+            };
+            amplify.subscribe(topic,callback);
+
+        },
+
+        unsubscribe: function(key){
+            amplify.unsubscribe(this.subscriptions[key].topic,this.subscriptions[key].callback);
+            delete this.subscriptions[key];
+        },
+
+        unsubscribeAll: function(){
+            var self = this;
+            _.each(this.subscriptions,function(sub,key){
+                  self.unsubscribe(key)
+            });
+        },
 
         checkPreloadComplete: function () {
             console.log('checkPreloadComplete', this.preloaded);
@@ -44,7 +72,9 @@ GameWorld = (function () {
 
             // setup pubsub to track each context loading
             // when all contexts loaded, notify server
-            amplify.subscribe('preloadComplete', function (key) {
+
+            // amplify.subscribe('preloadComplete', function (key) {
+            this.subscribe('preloadComplete', function (key) {
                 self.preloaded[key] = true;
                 if (self.checkPreloadComplete()) {
 
@@ -63,7 +93,7 @@ GameWorld = (function () {
             this.sound = new SoundManager();
             this.sound.loadGroup('default', sounds.entries, sounds.directory);
 
-            this.view = new View('main', Session.get('viewport_width'), Session.get('viewport_height'));
+            this.view = new View('main', Session.get('viewport_width'), Session.get('viewport_height'), this);
             this.view.createUIManager('hit-area');
 
             _.each(contexts, function (context, key) {
